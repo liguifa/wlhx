@@ -1,0 +1,531 @@
+﻿<table id="dg"></table>
+<form style="display:none" action="/User/InputStudent" method="post" target="iframe" enctype="multipart/form-data">
+    <input name="file" type="file" id="file" />
+    <input type="submit" id="submit" />
+</form>
+<iframe name="iframe" id="iframe" style="display:none"></iframe>
+<script src="~/js/validatebox.js"></script>
+<script type="text/javascript">
+    var PageIndex = 1;
+    var PageSize = 30;
+    var gade = 0;
+    var time;
+    var isAdd = false;
+    var isEdit = false;
+    var index = -1;
+    var proDir = eval("(" + ("@ViewBag.proDir").replace(/&quot;/g, "\"") + ")");
+    $('#dg').datagrid({
+        fit: true,
+        url: "/User/GetStudentList",
+        singleSelect: true,
+        rownumbers: true,
+        striped: true,
+        fitColumns: true,
+        pagination: true,
+        pageSize: PageSize,//每页显示的记录条数，默认为10
+        pageList: [10, 20, 30, 50],//每页显示几条记录
+        beforePageText: '第',//页数文本框前显示的汉字
+        pageNumber: PageIndex,
+        total: 300,
+        afterPageText: '页    共 {pages} 页',
+        displayMsg: '当前显示 {from} - {to} 条记录    共 {total} 条记录',
+        queryParams: {
+            gade: gade,
+            professional: 0
+        },
+        columns: [[
+            { field: 'id', hidden: true, },
+            { field: 'student_num', title: '学号', width: 10, editor: "validatebox" },
+            { field: 'name', title: '姓名', width: 15, editor: "validatebox" },
+            { field: 'grade', title: '年级', width: 15, editor: "validatebox" },
+            { field: 'professional', title: '专业', width: 25, editor: "validatebox" },
+            { field: 'class', title: '班级', width: 15, editor: "validatebox" },
+            { field: 'proDir', title: '专业方向', width: 20, editor: { type: 'combobox', options: { data: proDir, valuefield: 'value', textfield: 'text' } } },
+        ]],
+        toolbar: [{
+            id:"add",
+            iconCls: 'icon-add',
+            text: "添加",
+            handler: function ()
+            {
+                // 在第二行的位置插入一个新行
+                $('#dg').datagrid('insertRow', {
+                    index: 0,	// 索引从0开始
+                    row: {}
+                });
+                $("#dg").datagrid("beginEdit", 0);
+                index = 0;
+                isAdd = true;
+            }
+        }, '-', {
+            id:"edit",
+            iconCls: 'icon-edit',
+            text: "编辑",
+            disabled: true,
+            handler: function ()
+            {
+                var rows = $("#dg").datagrid("getSelections");
+                if (rows.length == 0)
+                {
+                    $.messager.alert("错误", "你未选中任何一行！", "error");
+                    return null;
+                }
+                index = $("#dg").datagrid("getRowIndex", rows[0]);
+                $("#dg").datagrid("beginEdit", index);
+                isEdit = true;
+            }
+        }, '-', {
+            id:"remove",
+            iconCls: 'icon-remove',
+            text: "删除",
+            disabled: true,
+            handler: function ()
+            {
+                var rows = $("#dg").datagrid("getSelections");
+                if (rows.length == 0)
+                {
+                    $.messager.alert("错误", "你未选中任何一行！", "error");
+                    return null;
+                }
+                index = $("#dg").datagrid("getRowIndex", rows[0]);
+                $.messager.confirm('提示', '是否确定删除？', function (r)
+                {
+                    if (r)
+                    {
+                        $.ajax({
+                            type: "post",
+                            url: "/User/RemoveStudent",
+                            data: {
+                                id: rows[0].id,
+                            },
+                            success: function (data)
+                            {
+                                if (data.status == "1")
+                                {
+                                    $.messager.alert("提示", data.msg, "info");
+                                    $("#dg").datagrid("deleteRow", index);
+                                }
+                                else
+                                {
+                                    $.messager.alert("错误", data.msg, "error");
+                                }
+                            }
+                        })
+                    }
+                });
+            }
+        }, '-', {
+            id:"save",
+            iconCls: 'icon-save',
+            text: "保存",
+            disabled: true,
+            handler: function ()
+            {
+                $("#dg").datagrid("endEdit", index);
+            }
+        }, '-', {
+            id:"reset",
+            iconCls: 'icon-redo',
+            text: "重置密码",
+            disabled: true,
+            handler: function ()
+            {
+                var rows = $("#dg").datagrid("getSelections");
+                if (rows.length == 0)
+                {
+                    $.messager.alert("错误", "你未选中任何一行！", "error");
+                    return null;
+                }
+                index = $("#dg").datagrid("getRowIndex", rows[0]);
+                $.messager.confirm('提示', '是否确定重置？', function (r)
+                {
+                    if (r)
+                    {
+                        $.ajax({
+                            type: "post",
+                            url: "/User/ResetStudentPassword",
+                            data: {
+                                id: rows[0].id,
+                            },
+                            success: function (data)
+                            {
+                                if (data.status == "1")
+                                {
+                                    $.messager.alert("提示", data.msg, "info");
+                                }
+                                else
+                                {
+                                    $.messager.alert("错误", data.msg, "error");
+                                }
+                            }
+                        })
+                    }
+                });
+            }
+        }, '-', {
+            id:"input",
+            iconCls: 'icon-input',
+            text: "导入",
+            handler: function ()
+            {
+                $("#file").val("");
+                $("#file").trigger("click");
+            }
+        }, '-', {
+            id: "select",
+            iconCls: 'icon-ok',
+            text: "全部选择",
+            handler: function ()
+            {
+                $("#dg").datagrid("selectAll");
+                if (isAdd || isEdit)
+                {
+                    $.messager.confirm('提示', '你有正在编辑的未保存的项，是否放弃保存？', function (r)
+                    {
+                        if (r)
+                        {
+                            $("#dg").datagrid("cancelEdit", index);
+                            $("#add").linkbutton("enable");
+                            $("#edit").linkbutton("enable");
+                            $("#remove").linkbutton("enable");
+                            $("#save").linkbutton("disable");
+                            $("#reset").linkbutton("enable");
+                            $("#input").linkbutton("enable");
+                            $("#undo").linkbutton("enable");
+                            $("#select").linkbutton("disable");
+                            isAdd = false;
+                            isEdit = false;
+                        }
+                    });
+
+                }
+                else
+                {
+                    $("#add").linkbutton("enable");
+                    $("#edit").linkbutton("enable");
+                    $("#remove").linkbutton("enable");
+                    $("#save").linkbutton("disable");
+                    $("#reset").linkbutton("enable");
+                    $("#input").linkbutton("enable");
+                    $("#undo").linkbutton("enable");
+                    $("#select").linkbutton("disable");
+                }
+            }
+        }, '-', {
+            id: "undo",
+            iconCls: 'icon-undo',
+            text: "取消选择",
+            disabled: true,
+            handler: function ()
+            {
+                $("#dg").datagrid("unselectAll");
+                $("#add").linkbutton("enable");
+                $("#edit").linkbutton("disable");
+                $("#remove").linkbutton("disable");
+                $("#save").linkbutton("disable");
+                $("#reset").linkbutton("disable");
+                $("#input").linkbutton("enable");
+                $("#undo").linkbutton("enable");
+                $("#select").linkbutton("enable");
+            }
+        }, '-', {
+            id: "search_2",
+            iconCls: 'icon-out',
+            text: "导出学生名单",
+            handler: function ()
+            {
+                $.messager.progress({
+                    title: "正在导出....",
+                    msg: "这可能需要一些时间！",
+                    text: "请稍等"
+                });
+
+                $.ajax({
+                    type: "post",
+                    url: "/User/OutStudent",
+                    data: {
+                        proDirId: 0
+                    },
+                    success: function (data)
+                    {
+                        $.messager.progress('close');
+                        if (data.status == "1")
+                        {
+                            $.messager.alert("提示", "导出成功！正在为你下载.....", "info");
+                            window.location.href = "/User/GetExcel/" + data.msg;
+                        }
+                        else
+                        {
+                            $.messager.alert("错误", data.msg, "error");
+                        }
+                    }
+                })
+            }
+        }],
+        onSelect: function (rowIndex, rowData)
+        {
+            if (isAdd || isEdit)
+            {
+                $.messager.confirm('提示', '你有正在编辑的未保存的项，是否放弃保存？', function (r)
+                {
+                    if (r)
+                    {
+                        $("#dg").datagrid("cancelEdit", index);
+                        $("#add").linkbutton("enable");
+                        $("#edit").linkbutton("enable");
+                        $("#remove").linkbutton("enable");
+                        $("#save").linkbutton("disable");
+                        $("#reset").linkbutton("enable");
+                        $("#input").linkbutton("enable");
+                        isAdd = false;
+                        isEdit = false;
+                    }
+                });
+
+            }
+            else
+            {
+                $("#add").linkbutton("enable");
+                $("#edit").linkbutton("enable");
+                $("#remove").linkbutton("enable");
+                $("#save").linkbutton("disable");
+                $("#reset").linkbutton("enable");
+                $("#input").linkbutton("enable");
+            }
+        },
+        onBeforeEdit:function()
+        {
+            $("#add").linkbutton("disable");
+            $("#edit").linkbutton("disable");
+            $("#remove").linkbutton("disable");
+            $("#save").linkbutton("enable");
+            $("#reset").linkbutton("disable");
+            $("#input").linkbutton("disable");
+            $("#undo").linkbutton("disable");
+            $("#select").linkbutton("disable");
+        },
+        onDblClickRow: function (rowIndex, rowData)
+        {
+            $("#cc").layout('remove', "east");
+            $("#cc").layout('add', {
+                region: 'east',
+                width: 280,
+                title: rowData.student_num,
+                href: "/User/StudentDetailedMsg/" + rowData.id,
+                method: "post",
+                content: "<div style='windth:180px;margin:auto;margin-top:200px;text-align:center'><img src=\"../../images/loading.gif\"><p>玩命加载中....</p><div>",
+                split: true,
+            });
+        },
+        onAfterEdit: function (rowIndex, rowData, changes)
+        {
+            if (isAdd)
+            {
+                if (CheckData(changes.student_num, /^[0-9]{1,11}$/) && changes.name.length >= 1 && changes.name.length <= 25 && (changes.grade == "1" || changes.grade == "2" || changes.grade == "3" || changes.grade == "4") && changes.professional.length >= 1 && changes.professional.length <= 25 && changes.class.length >= 1 && changes.class.length <= 25)
+                {
+                    $.ajax({
+                        type: "post",
+                        url: "/User/AddStudent",
+                        data: {
+                            student_num: changes.student_num,
+                            name: changes.name,
+                            grade: changes.grade,
+                            professional: changes.professional,
+                            _class: changes.class,
+                            proDir: changes.proDir,
+                        },
+                        success: function (data)
+                        {
+                            if (data.status == "1")
+                            {
+                                $.messager.alert("提示", data.msg, "info");
+                                $("#dg").datagrid("reload");
+                                isAdd = false;
+                                $("#add").linkbutton("enable");
+                                $("#edit").linkbutton("enable");
+                                $("#remove").linkbutton("enable");
+                                $("#save").linkbutton("disable");
+                                $("#reset").linkbutton("enable");
+                                $("#input").linkbutton("enable");
+                                $("#undo").linkbutton("disable");
+                                $("#select").linkbutton("enable");
+                            }
+                            else
+                            {
+                                $.messager.alert("错误", data.msg, "error");
+                                $("#dg").datagrid("beginEdit", index);
+                            }
+
+                        }
+                    })
+                }
+                else
+                {
+                    $.messager.alert("错误", "数据不合法！", "error");
+                }
+            }
+            else if (isEdit)
+            {
+                if (changes.student_num + "" == "undefined" && changes.name + "" == "undefined" && changes.grade + "" == "undefined" && changes.professional + "" == "undefined" && changes.class + "" == "undefined" && changes.proDir + "" == "undefined")
+                {
+                    $("#add").linkbutton("enable");
+                    $("#edit").linkbutton("enable");
+                    $("#remove").linkbutton("enable");
+                    $("#save").linkbutton("disable");
+                    $("#reset").linkbutton("enable");
+                    $("#input").linkbutton("enable");
+                    isAdd = false;
+                    isEdit = false;
+                    return null;
+                }
+                var student_num = changes.student_num + "" == "undefined" ? rowData.student_num + "" : changes.student_num + "";
+                var name = changes.name + "" == "undefined" ? rowData.name + "" : changes.name + "";
+                var grade = changes.grade + "" == "undefined" ? rowData.grade + "" : changes.grade + "";
+                var professional = changes.professional + "" == "undefined" ? rowData.professional + "" : changes.professional + "";
+                var _class = changes.class + "" == "undefined" ? rowData.class + "" : changes.class + "";
+                var proDir = changes.proDir + "" == "undefined" ? rowData.proDir + "" : changes.proDir + "";
+                if (CheckData(student_num, /^[0-9]{1,11}$/) && name.length >= 1 && name.length <= 25 && (grade == "1" || grade == "2" || grade == "3" || grade == "4") && professional.length >= 1 && professional.length <= 25 && _class.length >= 1 && _class.length <= 25)
+                {
+                    $.ajax({
+                        type: "post",
+                        url: "/User/EditStudent",
+                        data: {
+                            id: rowData.id,
+                            student_num: student_num,
+                            name: name,
+                            grade: grade,
+                            professional: professional,
+                            _class: _class,
+                            proDir: proDir,
+                        },
+                        success: function (data)
+                        {
+                            if (data.status == "1")
+                            {
+                                $.messager.alert("提示", data.msg, "info");
+                                $("#dg").datagrid("reload");
+                                isEdit = false;
+                                $("#add").linkbutton("enable");
+                                $("#edit").linkbutton("enable");
+                                $("#remove").linkbutton("enable");
+                                $("#save").linkbutton("disable");
+                                $("#reset").linkbutton("enable");
+                                $("#input").linkbutton("enable");
+                            }
+                            else
+                            {
+                                $.messager.alert("错误", data.msg, "error");
+                                $("#dg").datagrid("beginEdit", index);
+                            }
+
+                        }
+                    })
+                }
+                else
+                {
+                    $.messager.alert("错误", "数据不合法！", "error");
+                }
+            }
+        }
+    });
+    $("#dg").ready(function ()
+    {
+        function LoadPageation()
+        {
+            var p = $("#dg").datagrid('getPager');
+            $(p).pagination
+                ({
+                    pageSize: PageSize,//每页显示的记录条数，默认为10
+                    pageList: [10, 20, 30, 50],//每页显示几条记录
+                    beforePageText: '第',//页数文本框前显示的汉字
+                    pageNumber: PageIndex,
+                    total: 300,
+                    afterPageText: '页    共 {pages} 页',
+                    displayMsg: '显示{from}到{to} 共 {total} 条记录',
+                    onSelectPage: function (pageNumber, pageSize)
+                    {
+                        PageIndex = pageNumber;
+                        PageSize = pageSize;
+                        $('#dg').datagrid({
+                            pageSize: PageSize,//每页显示的记录条数，默认为10
+                            pageNumber: PageIndex,
+                        });
+                        $(p).pagination("loading");
+                        $("#dg").datagrid("loading");
+                        $("#dg").datagrid({
+                            queryParams: {
+                                gade: gade,
+                                pageIndex: pageNumber,
+                                pageSize: pageSize
+                            }
+                        });
+                        $("#dg").datagrid("reload");
+
+                        LoadPageation();
+
+                    },
+                });
+        }
+        LoadPageation();
+        AddSelect();
+    });
+    function AddSelect()
+    {
+        $(".pagination-info:last").before('<select id="select" style="float:left;margin-left:10px;margin-top:6px;" class="companyclass" name="cars"> <option value="0" class="all"  selected="selected">全部学生</option><option class="notstart" value="1">一年级</option><option class="started" value="2">二年级</option><option class="finished" value="3">三年级</option><option class="finished" value="4">四年级</option></select>');
+        $("#select").val(gade);
+        $("#select").change(function ()
+        {
+
+            gade = $(this).val();
+            $("#dg").datagrid({
+                queryParams: {
+                    gade: gade,
+                }
+            })
+            $("#dg").datagrid("reload");
+            AddSelect();
+
+        });
+    }
+    $("#file").change(function ()
+    {
+        var value = $(this).val()
+        var valueArray = value.split(".");
+        if (valueArray[valueArray.length - 1] == "xlsx" || valueArray[valueArray.length - 1] == "xls")
+        {
+            $("#submit").trigger("click");
+            $.messager.progress({
+                title: "正在导入......",
+                msg: "正在导入！这可能需要一些时间....",
+                text: "请稍等",
+            });
+            time = setInterval("ImportCall()", 500);
+        }
+        else
+        {
+            $.messager.alert("错误", "只支持后缀为xlsx、xls的Excel文件！", "error");
+        }
+    });
+    function ImportCall()
+    {
+        var data = $(window.frames["iframe"].document).find("body").text();
+        if (data != "")
+        {
+            data = eval("(" + data + ")")
+            if (data.status == "1")
+            {
+                $.messager.alert("提示", data.msg, "info");
+                $("#title").val("");
+                $("#file").val("");
+            }
+            else
+            {
+                $.messager.alert("错误", data.msg, "error");
+            }
+            clearInterval(time);
+            $.messager.progress('close');
+            $(window.frames["iframe"].document).find("body").text("");
+        }
+    }
+
+</script>

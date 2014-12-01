@@ -1,0 +1,192 @@
+﻿<table id="dg2"></table>
+<input style="display:none" id="print" type="button" value="打印" onclick="print();">
+<script type="text/javascript">
+    var PageIndex = 1;
+    var PageSize = 30;
+    var gade = 0;
+    var index = -1;
+    $('#dg2').datagrid({
+        fit: true,
+        url: "/User/GetStudentListFromSeniorProject",
+        singleSelect: true,
+        rownumbers: true,
+        striped: true,
+        fitColumns: true,
+        pagination: true,
+        pageSize: PageSize,//每页显示的记录条数，默认为10
+        pageList: [10, 20, 30, 50],//每页显示几条记录
+        beforePageText: '第',//页数文本框前显示的汉字
+        pageNumber: PageIndex,
+        total: 300,
+        afterPageText: '页    共 {pages} 页',
+        displayMsg: '当前显示 {from} - {to} 条记录    共 {total} 条记录',
+        queryParams: {
+            gade: 0,
+            projectId: '@ViewBag.id'
+        },
+        columns: [[
+            { field: 'id', hidden: true, },
+            { field: 'student_num', title: '学号', width: 10 },
+            { field: 'name', title: '姓名', width: 15 },
+            { field: 'grade', title: '年级', width: 15 },
+            { field: 'professional', title: '专业', width: 25 },
+            { field: 'class', title: '班级', width: 15 },
+            { field: 'proDir', title: '专业方向', width: 20 },
+        ]],
+        toolbar: [{
+            id: "add_2",
+            iconCls: 'icon-add',
+            text: "添加",
+            handler: function ()
+            {
+                $.messager.prompt('提示', '请输入学生学号：', function (r)
+                {
+                    if (r)
+                    {
+                        $.ajax({
+                            type: "post",
+                            url: "/User//ModifyStudentFromProject",
+                            data: {
+                                mark:"add",
+                                student_num: r,
+                                ProjectId: '@ViewBag.id',
+                            },
+                            success: function (data)
+                            {
+                                if (data.status == "1")
+                                {
+                                    $.messager.alert("提示", data.msg, "info");
+                                    $("#dg2").datagrid("reload");
+                                }
+                                else
+                                {
+                                    $.messager.alert("错误", data.msg, "error");
+                                }
+                            }
+                        })
+                    }
+                });
+            }
+        }, '-', {
+            id: "remove_2",
+            iconCls: 'icon-remove',
+            text: "删除",
+            disabled: true,
+            handler: function ()
+            {
+                var rows = $("#dg2").datagrid("getSelections");
+                if (rows.length == 0)
+                {
+                    $.messager.alert("错误", "你未选中任何一行！", "error");
+                    return null;
+                }
+                $.messager.confirm('提示', '是否确定删除？', function (r)
+                {
+                    if (r)
+                    {
+                        $.ajax({
+                            type: "post",
+                            url: "/User/ModifyStudentFromProject",
+                            data: {
+                                mark: "remove",
+                                student_num: rows[0].student_num,
+                                ProjectId: '@ViewBag.id',
+                            },
+                            success: function (data)
+                            {
+                                if (data.status == "1")
+                                {
+                                    $.messager.alert("提示", data.msg, "info");
+                                    $("#dg2").datagrid("reload");
+                                }
+                                else
+                                {
+                                    $.messager.alert("错误", data.msg, "error");
+                                }
+                            }
+                        })
+                    }
+                });
+            }
+        }, '-', {
+            id: "search_2",
+            iconCls: 'icon-out',
+            text: "导出学生名单",
+            handler: function ()
+            {
+                $.messager.progress({
+                    title: "正在导出....",
+                    msg: "这可能需要一些时间！",
+                    text:"请稍等"
+                });
+
+                $.ajax({
+                    type: "post",
+                    url: "/User/OutStudentFromProject",
+                    data: {
+                        id:'@ViewBag.id'
+                    },
+                    success: function (data)
+                    {
+                        $.messager.progress('close');
+                        if (data.status == "1")
+                        {
+                            $.messager.alert("提示", "导出成功！正在为你下载.....", "info");
+                            window.location.href = "/User/GetExcel/"+data.msg;
+                        }
+                        else
+                        {
+                            $.messager.alert("错误", data.msg, "error");
+                        }
+                    }
+                })
+            }
+        }],
+        onSelect: function (rowIndex, rowData)
+        {
+            $("#remove_2").linkbutton("enable");
+        },
+    });
+    $("#dg2").ready(function ()
+    {
+        function LoadPageation()
+        {
+            var p = $("#dg").datagrid('getPager');
+            $(p).pagination
+                ({
+                    pageSize: PageSize,//每页显示的记录条数，默认为10
+                    pageList: [10, 20, 30, 50],//每页显示几条记录
+                    beforePageText: '第',//页数文本框前显示的汉字
+                    pageNumber: PageIndex,
+                    total: 300,
+                    afterPageText: '页    共 {pages} 页',
+                    displayMsg: '显示{from}到{to} 共 {total} 条记录',
+                    onSelectPage: function (pageNumber, pageSize)
+                    {
+                        PageIndex = pageNumber;
+                        PageSize = pageSize;
+                        $('#dg').datagrid({
+                            pageSize: PageSize,//每页显示的记录条数，默认为10
+                            pageNumber: PageIndex,
+                        });
+                        $(p).pagination("loading");
+                        $("#dg").datagrid("loading");
+                        $("#dg").datagrid({
+                            queryParams: {
+                                gade: gade,
+                                pageIndex: pageNumber,
+                                pageSize: pageSize
+                            }
+                        });
+                        $("#dg").datagrid("reload");
+
+                        LoadPageation();
+
+                    },
+                });
+        }
+        LoadPageation();
+    });
+
+
+</script>

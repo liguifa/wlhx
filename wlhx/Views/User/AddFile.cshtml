@@ -1,0 +1,79 @@
+﻿<div id="dd">
+    <div id="form">
+        <form method="post" action="/User/AddFileIn" target="iframe" enctype="multipart/form-data">
+            <span>文件标题:</span><input id="title" name="title" type="text" /><br />
+            <span>选择文件:</span><input id="file" name="file" type="file" /><br />
+            <span>添加为教学课件:</span><input id="iskj" name="iskj" type="checkbox" /><br />
+            <span>课件类型:</span><select id="kjclass" name="kjclass"><option>视频</option><option>PPT</option></select><br />
+            <input id="submit" type="submit" style="display:none" />
+        </form>
+        <iframe name="iframe" id="iframe" style="display:none"></iframe>
+    </div>
+</div>
+<script type="text/javascript">
+    var time = ""
+    $('#dd').dialog({
+        title: '添加文件',
+        width: 400,
+        height: 200,
+        closed: false,
+        cache: false,
+        shadow: true,
+        resizable: false,
+        draggable: false,
+        closable: false,
+        modal: true,
+        buttons: [{
+            text: '确定',
+            handler: function ()
+            {
+                if ($("#title").val() != "" && $("#file").val() != "")
+                {
+                    $("#submit").trigger("click");
+                    time = setInterval("ImportCall()", 500);
+                }
+                else
+                {
+                    $.messager.alert("错误", "标题或文件不能为空.....", "error");
+                }
+            }
+        }, {
+            text: '关闭',
+            handler: function ()
+            {
+                $("#operation").empty();
+                $(".window").remove();
+                $(".window-shadow").remove();
+                $(".window-mask").remove();
+            }
+        }],
+    });
+    function ImportCall()
+    {
+        var data = $(window.frames["iframe"].document).find("body").text();
+        if (data != "")
+        {
+            data = eval("(" + data + ")")
+            if (data.status == "1")
+            {
+                $.messager.alert("提示", data.msg, "info");
+                $("#title").val("");
+                $("#file").val("");
+            }
+            else
+            {
+                $.messager.alert("错误", data.msg, "error");
+            }
+            clearInterval(time);
+            $(window.frames["iframe"].document).find("body").text("");
+        }
+    }
+</script>
+<style>
+    #form {
+        text-align: left;
+        width: 300px;
+        margin: auto;
+        margin-top: 20px;
+    }
+</style>

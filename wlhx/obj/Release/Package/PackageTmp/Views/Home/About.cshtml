@@ -1,0 +1,153 @@
+﻿@{
+    wlhx.Models.Dynamic d = ViewBag.teamInfo;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="keywords" content="大连工业大学,无机材料实验教学中心,无机材料,实验教学中心,无机材料研究所,辽宁省重点实验室,硅酸盐工程实验室" />
+    <meta name="description" content="大连工业大学无机材料实验室，原为硅酸盐工程实验室，始建于1958年，是我校建校初始就创建的实验室之一。经过50余年的发展，已经逐步形成了以玻璃、陶瓷材料为教学实验，以无机新材料为研究实验的特色人才培养体系，注重实践与创新能力的培养和建设，并取得了辉煌的成绩。" />
+    <title>无机材料实验教学中心-师资队伍</title>
+    <!-- Bootstrap -->
+    <link href="~/css/bootstrap.css" rel='stylesheet' type='text/css' />
+    <link href="~/css/bootstrap.min.css" rel='stylesheet' type='text/css' />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <!--[if lt IE 9]>
+         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="~/css/style.css" rel="stylesheet" type="text/css" media="all" />
+    <!-- start plugins -->
+    <script type="text/javascript" src="~/js/jquery.min.js"></script>
+    <script type="text/javascript" src="~/js/bootstrap.js"></script>
+    <script type="text/javascript" src="~/js/bootstrap.min.js"></script>
+    <!----font-Awesome----->
+    <link rel="stylesheet" href="~/css/font-awesome.min.css">
+    <!----font-Awesome----->
+</head>
+<body>
+   
+    <div class="header_bg1" style="background: url('/images/head6.png') no-repeat left;">
+        <div class="container">
+            <div class="row header">
+                <div class="logo navbar-left">
+                    <h1><a href="/Home/Index">无机材料实验教学中心 </a></h1>
+                    <p>Experimental Teaching Center of Inorganic Materials</p>
+                </div>
+                <div class="h_search navbar-right">
+                    <form action="http://cn.bing.com/search" target="_blank">
+                        <input type="text" class="text" name="q" value="搜索内容" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = '搜索内容';}">
+                        <input type="submit" value="搜索">
+                    </form>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    @Html.Partial("~/Views/Home/Head.cshtml")
+    <script>
+        $("#li5").addClass("active");
+        window.onload = function ()
+        {
+            var a = navigator.appVersion;
+            var patt1 = new RegExp(/MSIE \d\d?/);
+            var b = patt1.exec(a) + "";
+            b = parseInt(b.split("MSIE ")[1])
+            if (b < 9)
+            {
+                location.href = "/Home/BrowserError";
+            }
+        }
+    </script>
+    <!-- /.navbar-collapse -->
+
+    <div class="clearfix"></div>
+
+
+    <div class="main_bg" >
+        <!-- start main -->
+        <div class="container">
+            <div class="about row">
+               
+                    <h2>队伍介绍</h2>
+                    <p class="para">目前中心有共有20人，其中辽宁省教学名师1名，辽宁省“百千万人才工程”百人层次1名，千人层次1名。具有博士学位的占50%，高级职称的占72%。</p>
+                   
+                
+            </div>
+        </div>
+    </div><!-- end main -->
+    <div class="main_btm">
+        <!-- start main_btm -->
+        <div class="container">
+            <div class="about main row">
+                <div class="da-slide">
+                    <h2>成员介绍 </h2>
+                    @foreach (wlhx.Models.Dynamic dc in ViewBag.teacherlist)
+                    {
+                        string html = wlhx.Common.CheckStr.checkStr(dc.dynamic_body);
+                        html = html.Length >= 200 ? html.Substring(0, 200) : html;
+
+                        <h4><a href="/Home/See/@dc.dynamic_id/@dc.dynamic_class/li5">@dc.dynamic_title</a> </h4>
+                        <p class="para">@html</p>
+                        <a href="/Home/See/@dc.dynamic_id/@dc.dynamic_class/li5" class="fa-btn btn-1 btn-1e">查看更多</a>
+
+                    }
+                </div>
+            </div>
+
+
+            <ul class="pagination">
+                @{
+                    int i = ViewBag.index;
+                }
+                @if (ViewBag.isPrevious)
+                {
+                    int page = i - 1;
+                    <li><a href="/Home/About/@page">&laquo;</a></li>
+                }
+                @if (ViewBag.index == ViewBag.listsize)
+                {
+                    for (int x = ViewBag.listsize - 5; x < ViewBag.listsize; x++)
+                    {
+                        if (x >= 1)
+                        {
+                            if (x == ViewBag.index)
+                            {
+
+                                <li class="active"><a href="/Home/About/@x" target="_blank">@x</a></li>
+                            }
+                            else
+                            {
+                                <li><a href="/Home/About/@x">@x</a></li>
+                            }
+                        }
+
+                    }
+                }
+                @for (; i <= ViewBag.index + 5 && i <= ViewBag.listsize; i++)
+                {
+                    if (i == ViewBag.index)
+                    {
+
+                        <li class="active"><a class="active" href="/Home/About/@i">@i</a></li>
+                    }
+                    else
+                    {
+                        <li><a href="/Home/About/@i">@i</a></li>
+                    }
+
+                }
+
+                @if (ViewBag.isNext)
+                {
+                    int page = i - 1;
+                    <li><a href="/Home/About/@page">&raquo;</a></li>
+                }
+            </ul>
+        </div>
+    </div>
+   @Html.Partial("~/Views/Home/foot.cshtml")
+</body>
+</html>

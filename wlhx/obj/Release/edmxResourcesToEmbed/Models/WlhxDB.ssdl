@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="WlhxModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Admins">
+    <Key>
+      <PropertyRef Name="admin_id" />
+    </Key>
+    <Property Name="admin_id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="admin_username" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="admin_password" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="admin_power" Type="int" Nullable="false" />
+    <Property Name="admin_isDel" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Chooses">
+    <Key>
+      <PropertyRef Name="choose_id" />
+    </Key>
+    <Property Name="choose_id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="choose_ownStudentId" Type="bigint" Nullable="false" />
+    <Property Name="choose_ownExperimentId" Type="bigint" Nullable="false" />
+    <Property Name="choose_isDel" Type="bit" Nullable="false" />
+    <Property Name="choose_ExperimenTimet" Type="varchar" MaxLength="30" />
+  </EntityType>
+  <EntityType Name="Dynamics">
+    <Key>
+      <PropertyRef Name="dynamic_id" />
+    </Key>
+    <Property Name="dynamic_id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="dynamic_title" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="dynamic_body" Type="varchar(max)" Nullable="false" />
+    <Property Name="dynamic_publicTime" Type="datetime" Nullable="false" />
+    <Property Name="dynamic_class" Type="int" Nullable="false" />
+    <Property Name="dynamic_isIndex" Type="bit" />
+    <Property Name="dynamic_isDel" Type="bit" Nullable="false" />
+    <Property Name="dynamic_softwareCategory" Type="int" />
+  </EntityType>
+  <EntityType Name="Experiments">
+    <Key>
+      <PropertyRef Name="experiment_id" />
+    </Key>
+    <Property Name="experiment_id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="experiment_title" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="experiment_class" Type="int" Nullable="false" />
+    <Property Name="experiment_peopleNum" Type="int" Nullable="false" />
+    <Property Name="experiment_isDel" Type="bit" Nullable="false" />
+    <Property Name="experiment_allowGrades" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="experiment_week" Type="varchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="ExperimentTimes">
+    <Key>
+      <PropertyRef Name="experimentTime_id" />
+    </Key>
+    <Property Name="experimentTime_id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="experimentTime_startTime" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="experimentTime_week" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="experimentTime_ownExperimentId" Type="bigint" Nullable="false" />
+    <Property Name="experimentTime_isDel" Type="bit" Nullable="false" />
+    <Property Name="experimentTime_peopleNum" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Professionals">
+    <Key>
+      <PropertyRef Name="professionalDir_id" />
+    </Key>
+    <Property Name="professionalDir_id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="professional_name" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="professional_isDel" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="StudentImgs">
+    <Key>
+      <PropertyRef Name="studentImg_id" />
+    </Key>
+    <Property Name="studentImg_id" Type="int" Nullable="false" />
+    <Property Name="studentImg_url" Type="varchar" MaxLength="60" Nullable="false" />
+    <Property Name="studentImg_isDel" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Students">
+    <Key>
+      <PropertyRef Name="student_id" />
+    </Key>
+    <Property Name="student_id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="student_number" Type="varchar" MaxLength="30" Nullable="false" />
+    <Property Name="student_name" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="student_professional" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="student_class" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="student_grade" Type="int" Nullable="false" />
+    <Property Name="student_password" Type="varchar" MaxLength="30" Nullable="false" />
+    <Property Name="student_proDirectionId" Type="bigint" />
+    <Property Name="student_isDel" Type="bit" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_Chooses_Experiments">
+    <End Role="Experiments" Type="Self.Experiments" Multiplicity="1" />
+    <End Role="Chooses" Type="Self.Chooses" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Experiments">
+        <PropertyRef Name="experiment_id" />
+      </Principal>
+      <Dependent Role="Chooses">
+        <PropertyRef Name="choose_ownExperimentId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Chooses_Students">
+    <End Role="Students" Type="Self.Students" Multiplicity="1" />
+    <End Role="Chooses" Type="Self.Chooses" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Students">
+        <PropertyRef Name="student_id" />
+      </Principal>
+      <Dependent Role="Chooses">
+        <PropertyRef Name="choose_ownStudentId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ExperimentTimes_Experiments">
+    <End Role="Experiments" Type="Self.Experiments" Multiplicity="1" />
+    <End Role="ExperimentTimes" Type="Self.ExperimentTimes" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Experiments">
+        <PropertyRef Name="experiment_id" />
+      </Principal>
+      <Dependent Role="ExperimentTimes">
+        <PropertyRef Name="experimentTime_ownExperimentId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Students_Professionals">
+    <End Role="Professionals" Type="Self.Professionals" Multiplicity="0..1" />
+    <End Role="Students" Type="Self.Students" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Professionals">
+        <PropertyRef Name="professionalDir_id" />
+      </Principal>
+      <Dependent Role="Students">
+        <PropertyRef Name="student_proDirectionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="WlhxModelStoreContainer">
+    <EntitySet Name="Admins" EntityType="Self.Admins" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Chooses" EntityType="Self.Chooses" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Dynamics" EntityType="Self.Dynamics" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Experiments" EntityType="Self.Experiments" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ExperimentTimes" EntityType="Self.ExperimentTimes" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Professionals" EntityType="Self.Professionals" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="StudentImgs" EntityType="Self.StudentImgs" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Students" EntityType="Self.Students" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_Chooses_Experiments" Association="Self.FK_Chooses_Experiments">
+      <End Role="Experiments" EntitySet="Experiments" />
+      <End Role="Chooses" EntitySet="Chooses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Chooses_Students" Association="Self.FK_Chooses_Students">
+      <End Role="Students" EntitySet="Students" />
+      <End Role="Chooses" EntitySet="Chooses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ExperimentTimes_Experiments" Association="Self.FK_ExperimentTimes_Experiments">
+      <End Role="Experiments" EntitySet="Experiments" />
+      <End Role="ExperimentTimes" EntitySet="ExperimentTimes" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Students_Professionals" Association="Self.FK_Students_Professionals">
+      <End Role="Professionals" EntitySet="Professionals" />
+      <End Role="Students" EntitySet="Students" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

@@ -1,0 +1,103 @@
+﻿<table id="stuTable"></table>
+<script>
+   
+   
+    $("#stuTable").datagrid({
+        fit: true,
+        fitColumns: true,
+        url: "/User/GetCreStudentJson/@ViewBag.cid",
+        singleSelect: true,
+        striped: true,
+        pagination: false,
+        columns: [[
+            { field: "id", title: '学号', width: 150, },
+            { field: "name", title: '姓名', width: 150, },
+            { field: "pro", title: '专业', width: 150, },
+            { field: "grade", title: '年级', width: 150 },
+            { field: "dir", title: '专业方向', width: 150, },
+        ]],
+        toolbar: [{
+            iconCls: 'icon-add',
+            text: "增加",
+            handler: function () {
+                $.messager.prompt('提示', '请输入你的姓名学号：', function (r) {
+                    if (r) {
+                        $.ajax({
+                            type: "post",
+                            url: "/User/AddChooseStu/" + r,
+                            data: { exid: "@ViewBag.cid" },
+                            success: function (data) {
+                                var data = eval("(" + data + ")");
+                                if (data.back == "ok") {
+                                    $.messager.alert("提示", "添加成功！");
+                                    $("#stuTable").datagrid("reload");
+                                }
+                                else {
+                                    $.messager.alert("提示", data.back);
+                                }
+                            }
+                        })
+                    }
+                });
+
+
+            }
+        }, {
+            iconCls: 'icon-remove',
+            text: "删除",
+            handler: function () {
+                var select = $("#stuTable").datagrid("getSelected");
+                if (select == null) {
+                    $.messager.alert("提示", "请选择条目");
+                    return;
+                }
+                $.messager.confirm("提示", "确定要删除记录么？", function (r) {
+                    if (r) {
+
+
+                        $.ajax({
+                            type: "post",
+                            url: "/User/DelChooseStu/" + select.id,
+                            data: { exid: "@ViewBag.cid" },
+                            success: function (data) {
+                                var data = eval("("+data+")");
+                                if (data.back == "ok") {
+                                    $.messager.alert("提示", "删除成功");
+                                    var index = $("#stuTable").datagrid("getRowIndex", select);
+                                    $("#stuTable").datagrid("deleteRow", index);
+                                    return;
+                                }
+                                else {
+                                    $.messager.alert("提示", data.back);
+                                }
+                            }
+                        })
+                    }
+                })
+
+            }
+        }, {
+            iconCls: 'icon-add',
+            text: "导出",
+            handler: function () {
+                $.messager.alert("提示", "正在导出...");
+                $.ajax({
+                    type: "post",
+                    url: "/User/GetCreStudentFile/@ViewBag.cid",
+                    success: function (data) {
+                        var data = eval("(" + data + ")");
+                        if (data.back != "导出失败！未知错误！") {
+
+                            window.location.href = "/User/GetExcel/" + data.back;
+                        }
+                        else {
+                            $.messager.alert("提示", "导出失败，未知错误");
+                        }
+                    }
+                })
+            }
+        }
+        ]
+    })
+  
+</script>

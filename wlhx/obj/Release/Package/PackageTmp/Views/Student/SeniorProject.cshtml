@@ -1,0 +1,103 @@
+﻿<table id="dg"></table>
+<script type="text/javascript">
+    var PageIndex = 1;
+    var PageSize = 30;
+    $('#dg').datagrid({
+        fit: true,
+        url: "/Student/GetSeniorProjectList",
+        singleSelect: true,
+        rownumbers: true,
+        striped: true,
+        fitColumns: true,
+        pagination: true,
+        pageSize: PageSize,//每页显示的记录条数，默认为10
+        pageList: [10, 20, 30, 50],//每页显示几条记录
+        beforePageText: '第',//页数文本框前显示的汉字
+        pageNumber: PageIndex,
+        total: 300,
+        afterPageText: '页    共 {pages} 页',
+        displayMsg: '当前显示 {from} - {to} 条记录    共 {total} 条记录',
+        columns: [[
+            { field: 'id', hidden: true, },
+            { field: 'title', title: '课题', width: 40, },
+            { field: 'chooseNum', title: '已选人数', width: 15, },
+            { field: 'totalNum', title: '总人数', width: 15, },
+            { field: 'grade', title: '年级', width: 10, },
+            { field: 'oper', title: '选择', width: 10, }
+        ]],
+        onLoadSuccess: function ()
+        {
+            $(".choose").click(function ()
+            {
+                var value = $(this).val();
+                $.messager.confirm('提示', '是否确定选择？选择后不能修改！', function (r)
+                {
+                    if (r)
+                    {
+                        $("#dg").datagrid("loading");
+                        $.ajax({
+                            type: "post",
+                            url: "/Student/ExpermentProjectChoose",
+                            data: {
+                                id: value,
+                            },
+                            success: function (data)
+                            {
+                                $("#dg").datagrid("loaded");
+                                if (data.status == "1")
+                                {
+                                    $.messager.alert("提示", data.msg, "info");
+                                    $("#dg").datagrid("reload", null);
+                                }
+                                else
+                                {
+                                    $.messager.alert("错误", data.msg, "info");
+                                }
+                            }
+                        })
+                    }
+                });
+            });
+        }
+    });
+    $("#dg").ready(function ()
+    {
+        function LoadPageation()
+        {
+            var p = $("#dg").datagrid('getPager');
+            $(p).pagination
+                ({
+                    pageSize: PageSize,//每页显示的记录条数，默认为10
+                    pageList: [10, 20, 30, 50],//每页显示几条记录
+                    beforePageText: '第',//页数文本框前显示的汉字
+                    pageNumber: PageIndex,
+                    total: 300,
+                    afterPageText: '页    共 {pages} 页',
+                    displayMsg: '当前显示 {from} - {to} 条记录    共 {total} 条记录',
+                    onSelectPage: function (pageNumber, pageSize)
+                    {
+                        PageIndex = pageNumber;
+                        PageSize = pageSize;
+                        $('#dg').datagrid({
+                            pageSize: PageSize,//每页显示的记录条数，默认为10
+                            pageNumber: PageIndex,
+                        });
+                        $(p).pagination("loading");
+                        $("#dg").datagrid("loading");
+                        $("#dg").datagrid({
+                            queryParams: {
+                                id: '@ViewBag.type',
+                                pageIndex: pageNumber,
+                                pageSize: pageSize
+                            }
+                        });
+                        $("#dg").datagrid("reload");
+                        LoadPageation();
+
+                    },
+                });
+        }
+        LoadPageation();
+
+    })
+</script>

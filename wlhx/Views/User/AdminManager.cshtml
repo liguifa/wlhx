@@ -1,0 +1,374 @@
+﻿<table id="dg"></table>
+<script type="text/javascript">
+    var index = -1;
+    var isedit = false;
+    var isadd = false;
+    var Address = [{ "value": "0", "text": "超级管理员" }, { "value": "1", "text": "管理员" }];
+    $('#dg').datagrid({
+        fit: true,
+        url: "/User/GetAdminJson",
+        singleSelect: true,
+        rownumbers: true,
+        striped:true,
+        columns: [[
+            { field: 'id', hidden: true, },
+            { field: 'user', title: '用户名', width: 100, editor: "validatebox" },
+            { field: 'level', title: '级别', width: 100, editor: { type: 'combobox', options: { data: Address, valuefield: 'value', textfield: 'text' } } }
+        ]],
+        toolbar: [{
+            id: "add",
+            iconCls: 'icon-add',
+            text: '添加',
+            disabled: false,
+            handler: function ()
+            {
+                isadd = true;
+                // 在第二行的位置插入一个新行
+                $('#dg').datagrid('insertRow', {
+                    index: 0,	// 索引从0开始
+                    row: {
+                        user:"",
+                        level:"管理员"
+                    }
+                });
+                
+                $("#dg").datagrid("beginEdit", 0);
+                index = 0;
+                $("#edit").linkbutton('disable');
+                $("#add").linkbutton('disable');
+                $("#remove").linkbutton('disable');
+                $("#save").linkbutton('enable');
+                $("#reset").linkbutton('disable');
+            }
+        }, '-', {
+            id: "edit",
+            iconCls: 'icon-edit',
+            text: '编辑',
+            disabled: true,
+            handler: function ()
+            {
+                var rows = $("#dg").datagrid("getSelections");
+                if (rows.length == 0)
+                {
+                    $.messager.alert("提示", "你未选择任何一行！");
+                    return;
+                }
+                for (var i in rows)
+                {
+                    index = $("#dg").datagrid('getRowIndex', rows[i]);
+                    $("#dg").datagrid('beginEdit', index);
+                }
+                $("#edit").linkbutton('disable');
+                $("#add").linkbutton('disable');
+                $("#remove").linkbutton('disable');
+                $("#save").linkbutton('enable');
+                $("#reset").linkbutton('disable');
+                isedit = true;
+            }
+        }, '-', {
+            id: "remove",
+            iconCls: 'icon-remove',
+            text: '删除',
+            disabled: true,
+            handler: function ()
+            {
+                var rows = $("#dg").datagrid("getSelections");
+                $.messager.confirm("提示", "是否确定删除！删除后不能恢复....", function (r)
+                {
+                    if (r)
+                    {
+                        $.ajax({
+                            type: "post",
+                            url: "/User/RemoveAdmin/",
+                            data: {
+                                mark: "remove",
+                                id: rows[0].id
+                            },
+                            success: function (data)
+                            {
+
+                                if (data.status == "1")
+                                {
+                                    $.messager.alert("提示", data.msg, "info");
+                                    $("#dg").datagrid("deleteRow", $("#dg").datagrid("getRowIndex", rows[0]));
+                                    $("#edit").linkbutton('disable');
+                                    $("#add").linkbutton('disable');
+                                    $("#remove").linkbutton('disable');
+                                    $("#save").linkbutton('disable');
+                                    $("#reset").linkbutton("disable");
+                                }
+                                else
+                                {
+                                    $.messager.alert("提示", data.msg, "error");
+                                }
+                            }
+                        });
+
+                    }
+                });
+            }
+        }, '-', {
+            id: "save",
+            iconCls: 'icon-save',
+            text: '保存',
+            disabled: true,
+            handler: function ()
+            {
+                $("#dg").treegrid('endEdit', index);
+                $("#edit").linkbutton('enable');
+                $("#remove").linkbutton('enable');
+                $("#save").linkbutton('disable');
+                $("#reset").linkbutton("enable");
+                $("#add").linkbutton('enable');
+                isedit = false;
+            }
+        }, '-', {
+            id: "reset",
+            iconCls: 'icon-redo',
+            text: "重置密码 ",
+            disabled: true,
+            handler: function ()
+            {
+                var rows = $("#dg").datagrid("getSelections");
+
+                $.ajax({
+                    type: "post",
+                    url: "/User/ResetPassword/",
+                    data: {
+                        id: rows[0].id,
+                        mark: "admin"
+                    },
+                    success: function (data)
+                    {
+                        if (data.status == "1")
+                        {
+                            $.messager.alert("提示", data.msg, "info");
+                        }
+                        else
+                        {
+                            $.messager.alert("错误", data.msg, "error");
+                        }
+                    }
+                });
+            }
+        }],
+        onUnselectAll: function ()
+        {
+            $("#edit").linkbutton('disable');
+            $("#remove").linkbutton('disable');
+            $("#reset").linkbutton("disable");
+            $("#save").linkbutton("disable");
+            $("#edit").linkbutton('disable');
+        },
+        onSelect: function (rowIndex, rowData)
+        {
+            if (!isedit)
+            {
+                $("#edit").linkbutton('enable');
+                $("#reset").linkbutton('enable');
+                $("#remove").linkbutton('enable');
+                $("#add").linkbutton('enable');
+            }
+            else
+            {
+                $.messager.confirm("提示", "还有编辑的行未保存，要放弃吗?", function (r)
+                {
+                    if (r)
+                    {
+
+                        isedit = false;
+                        $("#edit").linkbutton('enable');
+                        $("#reset").linkbutton('enable');
+                        $("#remove").linkbutton('enable');
+                        $("#save").linkbutton("disable");
+                        $("#add").linkbutton('disable');
+                        $(id).datagrid("cancelEdit", index);
+                    }
+                    else
+                    {
+                        $(saveid).linkbutton("enable");
+                    }
+                });
+            }
+        },
+        onAfterEdit: function (rowIndex, rowData, changes)
+        {
+            if (isedit)
+            {
+                var user = changes.user + "" == "undefined" ? rowData.user : changes.user;
+                var level = changes.level + "" == "undefined" ? rowData.level : changes.level;
+                level = level == "管理员" ? 1 : level;
+                level = level == "超级管理员" ? 0 : level;
+                level = parseInt(level);
+                if (!(level == 0 || level == 1))
+                {
+                    $.messager.confirm("提示", "数据不合法，是否放弃保存?", function (r)
+                    {
+                        if (r)
+                        {
+                            $("#dg").datagrid("reload", null);
+                            $(editid).linkbutton('enable');
+                            $(resetid).linkbutton("enable");
+                            $(removeid).linkbutton('enable');
+                            $(saveid).linkbutton('disable');
+                            $("#add").linkbutton('enable');
+                        }
+                        else
+                        {
+                            $("#dg").datagrid('beginEdit', rowIndex);
+                        }
+                    })
+                    return null;
+                }
+                if (!validata(user))
+                {
+                    $.messager.confirm("提示", "数据不合法，是否放弃保存?", function (r)
+                    {
+
+                        if (r)
+                        {
+                            $("#dg").datagrid("reload", null);
+                            $("#edit").linkbutton('enable');
+                            $("#reset").linkbutton("enable");
+                            $("#remove").linkbutton('enable');
+                            $("#save").linkbutton('disable');
+                            $("#edit").linkbutton('enable');
+                        }
+                        else
+                        {
+                            $("#dg").datagrid('beginEdit', rowIndex);
+                        }
+                    })
+                    return null;
+                }
+                $.ajax({
+                    type: "post",
+                    url: "/User/ModifyAdmin",
+                    data: {
+                        id: rowData.id,
+                        user: user,
+                        level: level
+                    },
+                    success: function (data)
+                    {
+                        if (data.status == "1")
+                        {
+                            $.messager.alert("提示", data.msg, "info");
+                        }
+                        else
+                        {
+                            $.messager.alert("错误", data.msg, "error")
+                        }
+                        $("#dg").datagrid("reload", null);
+                        $("#edit").linkbutton('enable');
+                        $("#reset").linkbutton("enable");
+                        $("#remove").linkbutton('enable');
+                        $("#save").linkbutton('disable');
+                        $("#add").linkbutton('enable');
+                        isedit = false;
+                    }
+                })
+            }
+            else if (isadd)
+            {
+                if (changes.user + "" == "undefined" && changes.level + "" == "undefined")
+                {
+                    $.messager.confirm("提示", "未填写数据，是否放弃保存?", function (r)
+                    {
+
+                        if (r)
+                        {
+                            $("#dg").datagrid("reload", null);
+                            $("#edit").linkbutton('enable');
+                            $("#reset").linkbutton("enable");
+                            $("#remove").linkbutton('enable');
+                            $("#save").linkbutton('disable');
+                            $("#add").linkbutton('enable');
+                        }
+                        else
+                        {
+                            $("#dg").datagrid('beginEdit', rowIndex);
+                            $("#edit").linkbutton('disable');
+                            $("#reset").linkbutton("disable");
+                            $("#remove").linkbutton('disable');
+                            $("#save").linkbutton('enable');
+                            $("#add").linkbutton('disable');
+                        }
+                    });
+                }
+                var user = changes.user + "" == "undefined" ? rowData.user : changes.user;
+                var level = changes.level + "" == "undefined" ? rowData.level : changes.level;
+                level = level == "管理员" ? 1 : level;
+                level = level == "超级管理员" ? 0 : level;
+                level = parseInt(level);
+                if (!(level == 0 || level == 1))
+                {
+                    $.messager.confirm("提示", "数据不合法，是否放弃保存?", function (r)
+                    {
+                        if (r)
+                        {
+                            $("#dg").datagrid("reload", null);
+                            $(editid).linkbutton('enable');
+                            $(resetid).linkbutton("enable");
+                            $(removeid).linkbutton('enable');
+                            $(saveid).linkbutton('disable');
+                            $("#add").linkbutton('enable');
+                        }
+                        else
+                        {
+                            $("#dg").datagrid('beginEdit', rowIndex);
+                        }
+                    })
+                    return null;
+                }
+                if (!validata(user))
+                {
+                    $.messager.confirm("提示", "数据不合法，是否放弃保存?", function (r)
+                    {
+
+                        if (r)
+                        {
+                            $("#dg").datagrid("reload", null);
+                            $("#edit").linkbutton('enable');
+                            $("#reset").linkbutton("enable");
+                            $("#remove").linkbutton('enable');
+                            $("#save").linkbutton('disable');
+                            $("#edit").linkbutton('enable');
+                        }
+                        else
+                        {
+                            $("#dg").datagrid('beginEdit', rowIndex);
+                        }
+                    })
+                    return null;
+                }
+                $.ajax({
+                    type: "post",
+                    url: "/User/AddAdmin",
+                    data: {
+                        user: user,
+                        level: level
+                    },
+                    success: function (data)
+                    {
+                        if (data.status == "1")
+                        {
+                            $.messager.alert("提示", data.msg, "info");
+                        }
+                        else
+                        {
+                            $.messager.alert("错误", data.msg, "error")
+                        }
+                        $("#dg").datagrid("reload", null);
+                        $("#edit").linkbutton('enable');
+                        $("#reset").linkbutton("enable");
+                        $("#remove").linkbutton('enable');
+                        $("#save").linkbutton('disable');
+                        $("#add").linkbutton('enable');
+                        isedit = false;
+                    }
+                })
+            }
+        },
+    });
+</script>

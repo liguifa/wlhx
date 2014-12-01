@@ -1,0 +1,53 @@
+﻿<table id="pg" style="width:300px"></table>
+<script type="text/javascript">
+    $('#pg').propertygrid({
+        url: '/User/StudentDetailedMsgList/@ViewBag.id',
+        showGroup: true,
+        fit: true,
+        fitColumns: true,
+        scrollbarSize: 0,
+        columns: [[
+            { field: 'id', hidden: true, },
+            { field: 'name', title: '分类', width: 20 },
+            { field: 'value', title: '名称', width: 30 },
+            { field: 'time', title: '时间', width: 30 },
+            { field: 'oper', title: '删除', width: 20 }
+        ]],
+        onLoadSuccess: function ()
+        {
+            $(".oper").click(function ()
+            {
+                var value = $(this).val();
+                $.messager.confirm("提示", "是否确定删除！删除后不能恢复....", function (r)
+                {
+                    if (r)
+                    {
+                        $.ajax({
+                            type: "post",
+                            url: "/User/RemoveStudentChoose/",
+                            data: {
+                                mark: "remove",
+                                id: value,
+                            },
+                            success: function (data)
+                            {
+
+                                if (data.status == "1")
+                                {
+                                    $.messager.alert("提示", data.msg, "info");
+                                    $("#pg").propertygrid("reload");
+                                }
+                                else
+                                {
+                                    $.messager.alert("提示", data.msg, "error");
+                                }
+                            }
+                        });
+
+                    }
+                });
+            });
+        }
+    });
+
+</script>

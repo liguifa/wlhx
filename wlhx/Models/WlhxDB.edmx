@@ -1,0 +1,464 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="WlhxModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Admins">
+          <Key>
+            <PropertyRef Name="admin_id" />
+          </Key>
+          <Property Name="admin_id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="admin_username" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="admin_password" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="admin_power" Type="int" Nullable="false" />
+          <Property Name="admin_isDel" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Chooses">
+          <Key>
+            <PropertyRef Name="choose_id" />
+          </Key>
+          <Property Name="choose_id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="choose_ownStudentId" Type="bigint" Nullable="false" />
+          <Property Name="choose_ownExperimentId" Type="bigint" Nullable="false" />
+          <Property Name="choose_isDel" Type="bit" Nullable="false" />
+          <Property Name="choose_ExperimenTimet" Type="varchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="Dynamics">
+          <Key>
+            <PropertyRef Name="dynamic_id" />
+          </Key>
+          <Property Name="dynamic_id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="dynamic_title" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="dynamic_body" Type="varchar(max)" Nullable="false" />
+          <Property Name="dynamic_publicTime" Type="datetime" Nullable="false" />
+          <Property Name="dynamic_class" Type="int" Nullable="false" />
+          <Property Name="dynamic_isIndex" Type="bit" />
+          <Property Name="dynamic_isDel" Type="bit" Nullable="false" />
+          <Property Name="dynamic_softwareCategory" Type="int" />
+        </EntityType>
+        <EntityType Name="Experiments">
+          <Key>
+            <PropertyRef Name="experiment_id" />
+          </Key>
+          <Property Name="experiment_id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="experiment_title" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="experiment_class" Type="int" Nullable="false" />
+          <Property Name="experiment_peopleNum" Type="int" Nullable="false" />
+          <Property Name="experiment_isDel" Type="bit" Nullable="false" />
+          <Property Name="experiment_allowGrades" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="experiment_week" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="ExperimentTimes">
+          <Key>
+            <PropertyRef Name="experimentTime_id" />
+          </Key>
+          <Property Name="experimentTime_id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="experimentTime_startTime" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="experimentTime_week" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="experimentTime_ownExperimentId" Type="bigint" Nullable="false" />
+          <Property Name="experimentTime_isDel" Type="bit" Nullable="false" />
+          <Property Name="experimentTime_peopleNum" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Professionals">
+          <Key>
+            <PropertyRef Name="professionalDir_id" />
+          </Key>
+          <Property Name="professionalDir_id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="professional_name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="professional_isDel" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="StudentImgs">
+          <Key>
+            <PropertyRef Name="studentImg_id" />
+          </Key>
+          <Property Name="studentImg_id" Type="int" Nullable="false" />
+          <Property Name="studentImg_url" Type="varchar" MaxLength="60" Nullable="false" />
+          <Property Name="studentImg_isDel" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Students">
+          <Key>
+            <PropertyRef Name="student_id" />
+          </Key>
+          <Property Name="student_id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="student_number" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="student_name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="student_professional" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="student_class" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="student_grade" Type="int" Nullable="false" />
+          <Property Name="student_password" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="student_proDirectionId" Type="bigint" />
+          <Property Name="student_isDel" Type="bit" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Chooses_Experiments">
+          <End Role="Experiments" Type="Self.Experiments" Multiplicity="1" />
+          <End Role="Chooses" Type="Self.Chooses" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Experiments">
+              <PropertyRef Name="experiment_id" />
+            </Principal>
+            <Dependent Role="Chooses">
+              <PropertyRef Name="choose_ownExperimentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Chooses_Students">
+          <End Role="Students" Type="Self.Students" Multiplicity="1" />
+          <End Role="Chooses" Type="Self.Chooses" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Students">
+              <PropertyRef Name="student_id" />
+            </Principal>
+            <Dependent Role="Chooses">
+              <PropertyRef Name="choose_ownStudentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExperimentTimes_Experiments">
+          <End Role="Experiments" Type="Self.Experiments" Multiplicity="1" />
+          <End Role="ExperimentTimes" Type="Self.ExperimentTimes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Experiments">
+              <PropertyRef Name="experiment_id" />
+            </Principal>
+            <Dependent Role="ExperimentTimes">
+              <PropertyRef Name="experimentTime_ownExperimentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Students_Professionals">
+          <End Role="Professionals" Type="Self.Professionals" Multiplicity="0..1" />
+          <End Role="Students" Type="Self.Students" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Professionals">
+              <PropertyRef Name="professionalDir_id" />
+            </Principal>
+            <Dependent Role="Students">
+              <PropertyRef Name="student_proDirectionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="WlhxModelStoreContainer">
+          <EntitySet Name="Admins" EntityType="Self.Admins" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Chooses" EntityType="Self.Chooses" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Dynamics" EntityType="Self.Dynamics" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Experiments" EntityType="Self.Experiments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ExperimentTimes" EntityType="Self.ExperimentTimes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Professionals" EntityType="Self.Professionals" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StudentImgs" EntityType="Self.StudentImgs" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Students" EntityType="Self.Students" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Chooses_Experiments" Association="Self.FK_Chooses_Experiments">
+            <End Role="Experiments" EntitySet="Experiments" />
+            <End Role="Chooses" EntitySet="Chooses" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Chooses_Students" Association="Self.FK_Chooses_Students">
+            <End Role="Students" EntitySet="Students" />
+            <End Role="Chooses" EntitySet="Chooses" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExperimentTimes_Experiments" Association="Self.FK_ExperimentTimes_Experiments">
+            <End Role="Experiments" EntitySet="Experiments" />
+            <End Role="ExperimentTimes" EntitySet="ExperimentTimes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Students_Professionals" Association="Self.FK_Students_Professionals">
+            <End Role="Professionals" EntitySet="Professionals" />
+            <End Role="Students" EntitySet="Students" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="WlhxModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Admin">
+          <Key>
+            <PropertyRef Name="admin_id" />
+          </Key>
+          <Property Name="admin_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="admin_username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="admin_password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="admin_power" Type="Int32" Nullable="false" />
+          <Property Name="admin_isDel" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Choos">
+          <Key>
+            <PropertyRef Name="choose_id" />
+          </Key>
+          <Property Name="choose_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="choose_ownStudentId" Type="Int64" Nullable="false" />
+          <Property Name="choose_ownExperimentId" Type="Int64" Nullable="false" />
+          <Property Name="choose_isDel" Type="Boolean" Nullable="false" />
+          <Property Name="choose_ExperimenTimet" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Experiment" Relationship="Self.FK_Chooses_Experiments" FromRole="Chooses" ToRole="Experiments" />
+          <NavigationProperty Name="Student" Relationship="Self.FK_Chooses_Students" FromRole="Chooses" ToRole="Students" />
+        </EntityType>
+        <EntityType Name="Dynamic">
+          <Key>
+            <PropertyRef Name="dynamic_id" />
+          </Key>
+          <Property Name="dynamic_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="dynamic_title" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="dynamic_body" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="dynamic_publicTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="dynamic_class" Type="Int32" Nullable="false" />
+          <Property Name="dynamic_isIndex" Type="Boolean" />
+          <Property Name="dynamic_isDel" Type="Boolean" Nullable="false" />
+          <Property Name="dynamic_softwareCategory" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Experiment">
+          <Key>
+            <PropertyRef Name="experiment_id" />
+          </Key>
+          <Property Name="experiment_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="experiment_title" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="experiment_class" Type="Int32" Nullable="false" />
+          <Property Name="experiment_peopleNum" Type="Int32" Nullable="false" />
+          <Property Name="experiment_isDel" Type="Boolean" Nullable="false" />
+          <Property Name="experiment_allowGrades" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="experiment_week" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Chooses" Relationship="Self.FK_Chooses_Experiments" FromRole="Experiments" ToRole="Chooses" />
+          <NavigationProperty Name="ExperimentTimes" Relationship="Self.FK_ExperimentTimes_Experiments" FromRole="Experiments" ToRole="ExperimentTimes" />
+        </EntityType>
+        <EntityType Name="ExperimentTime">
+          <Key>
+            <PropertyRef Name="experimentTime_id" />
+          </Key>
+          <Property Name="experimentTime_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="experimentTime_startTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="experimentTime_week" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="experimentTime_ownExperimentId" Type="Int64" Nullable="false" />
+          <Property Name="experimentTime_isDel" Type="Boolean" Nullable="false" />
+          <Property Name="experimentTime_peopleNum" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Experiment" Relationship="Self.FK_ExperimentTimes_Experiments" FromRole="ExperimentTimes" ToRole="Experiments" />
+        </EntityType>
+        <EntityType Name="Professional">
+          <Key>
+            <PropertyRef Name="professionalDir_id" />
+          </Key>
+          <Property Name="professionalDir_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="professional_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="professional_isDel" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Students" Relationship="Self.FK_Students_Professionals" FromRole="Professionals" ToRole="Students" />
+        </EntityType>
+        <EntityType Name="StudentImg">
+          <Key>
+            <PropertyRef Name="studentImg_id" />
+          </Key>
+          <Property Name="studentImg_id" Type="Int32" Nullable="false" />
+          <Property Name="studentImg_url" Type="String" MaxLength="60" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="studentImg_isDel" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Student">
+          <Key>
+            <PropertyRef Name="student_id" />
+          </Key>
+          <Property Name="student_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="student_number" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="student_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="student_professional" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="student_class" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="student_grade" Type="Int32" Nullable="false" />
+          <Property Name="student_password" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="student_proDirectionId" Type="Int64" />
+          <Property Name="student_isDel" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Chooses" Relationship="Self.FK_Chooses_Students" FromRole="Students" ToRole="Chooses" />
+          <NavigationProperty Name="Professional" Relationship="Self.FK_Students_Professionals" FromRole="Students" ToRole="Professionals" />
+        </EntityType>
+        <Association Name="FK_Chooses_Experiments">
+          <End Role="Experiments" Type="Self.Experiment" Multiplicity="1" />
+          <End Role="Chooses" Type="Self.Choos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Experiments">
+              <PropertyRef Name="experiment_id" />
+            </Principal>
+            <Dependent Role="Chooses">
+              <PropertyRef Name="choose_ownExperimentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Chooses_Students">
+          <End Role="Students" Type="Self.Student" Multiplicity="1" />
+          <End Role="Chooses" Type="Self.Choos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Students">
+              <PropertyRef Name="student_id" />
+            </Principal>
+            <Dependent Role="Chooses">
+              <PropertyRef Name="choose_ownStudentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExperimentTimes_Experiments">
+          <End Role="Experiments" Type="Self.Experiment" Multiplicity="1" />
+          <End Role="ExperimentTimes" Type="Self.ExperimentTime" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Experiments">
+              <PropertyRef Name="experiment_id" />
+            </Principal>
+            <Dependent Role="ExperimentTimes">
+              <PropertyRef Name="experimentTime_ownExperimentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Students_Professionals">
+          <End Role="Professionals" Type="Self.Professional" Multiplicity="0..1" />
+          <End Role="Students" Type="Self.Student" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Professionals">
+              <PropertyRef Name="professionalDir_id" />
+            </Principal>
+            <Dependent Role="Students">
+              <PropertyRef Name="student_proDirectionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="WlhxEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Admins" EntityType="Self.Admin" />
+          <EntitySet Name="Chooses" EntityType="Self.Choos" />
+          <EntitySet Name="Dynamics" EntityType="Self.Dynamic" />
+          <EntitySet Name="Experiments" EntityType="Self.Experiment" />
+          <EntitySet Name="ExperimentTimes" EntityType="Self.ExperimentTime" />
+          <EntitySet Name="Professionals" EntityType="Self.Professional" />
+          <EntitySet Name="StudentImgs" EntityType="Self.StudentImg" />
+          <EntitySet Name="Students" EntityType="Self.Student" />
+          <AssociationSet Name="FK_Chooses_Experiments" Association="Self.FK_Chooses_Experiments">
+            <End Role="Experiments" EntitySet="Experiments" />
+            <End Role="Chooses" EntitySet="Chooses" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Chooses_Students" Association="Self.FK_Chooses_Students">
+            <End Role="Students" EntitySet="Students" />
+            <End Role="Chooses" EntitySet="Chooses" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExperimentTimes_Experiments" Association="Self.FK_ExperimentTimes_Experiments">
+            <End Role="Experiments" EntitySet="Experiments" />
+            <End Role="ExperimentTimes" EntitySet="ExperimentTimes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Students_Professionals" Association="Self.FK_Students_Professionals">
+            <End Role="Professionals" EntitySet="Professionals" />
+            <End Role="Students" EntitySet="Students" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="WlhxModelStoreContainer" CdmEntityContainer="WlhxEntities">
+          <EntitySetMapping Name="Admins">
+            <EntityTypeMapping TypeName="WlhxModel.Admin">
+              <MappingFragment StoreEntitySet="Admins">
+                <ScalarProperty Name="admin_id" ColumnName="admin_id" />
+                <ScalarProperty Name="admin_username" ColumnName="admin_username" />
+                <ScalarProperty Name="admin_password" ColumnName="admin_password" />
+                <ScalarProperty Name="admin_power" ColumnName="admin_power" />
+                <ScalarProperty Name="admin_isDel" ColumnName="admin_isDel" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Chooses">
+            <EntityTypeMapping TypeName="WlhxModel.Choos">
+              <MappingFragment StoreEntitySet="Chooses">
+                <ScalarProperty Name="choose_id" ColumnName="choose_id" />
+                <ScalarProperty Name="choose_ownStudentId" ColumnName="choose_ownStudentId" />
+                <ScalarProperty Name="choose_ownExperimentId" ColumnName="choose_ownExperimentId" />
+                <ScalarProperty Name="choose_isDel" ColumnName="choose_isDel" />
+                <ScalarProperty Name="choose_ExperimenTimet" ColumnName="choose_ExperimenTimet" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Dynamics">
+            <EntityTypeMapping TypeName="WlhxModel.Dynamic">
+              <MappingFragment StoreEntitySet="Dynamics">
+                <ScalarProperty Name="dynamic_id" ColumnName="dynamic_id" />
+                <ScalarProperty Name="dynamic_title" ColumnName="dynamic_title" />
+                <ScalarProperty Name="dynamic_body" ColumnName="dynamic_body" />
+                <ScalarProperty Name="dynamic_publicTime" ColumnName="dynamic_publicTime" />
+                <ScalarProperty Name="dynamic_class" ColumnName="dynamic_class" />
+                <ScalarProperty Name="dynamic_isIndex" ColumnName="dynamic_isIndex" />
+                <ScalarProperty Name="dynamic_isDel" ColumnName="dynamic_isDel" />
+                <ScalarProperty Name="dynamic_softwareCategory" ColumnName="dynamic_softwareCategory" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Experiments">
+            <EntityTypeMapping TypeName="WlhxModel.Experiment">
+              <MappingFragment StoreEntitySet="Experiments">
+                <ScalarProperty Name="experiment_id" ColumnName="experiment_id" />
+                <ScalarProperty Name="experiment_title" ColumnName="experiment_title" />
+                <ScalarProperty Name="experiment_class" ColumnName="experiment_class" />
+                <ScalarProperty Name="experiment_peopleNum" ColumnName="experiment_peopleNum" />
+                <ScalarProperty Name="experiment_isDel" ColumnName="experiment_isDel" />
+                <ScalarProperty Name="experiment_allowGrades" ColumnName="experiment_allowGrades" />
+                <ScalarProperty Name="experiment_week" ColumnName="experiment_week" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ExperimentTimes">
+            <EntityTypeMapping TypeName="WlhxModel.ExperimentTime">
+              <MappingFragment StoreEntitySet="ExperimentTimes">
+                <ScalarProperty Name="experimentTime_id" ColumnName="experimentTime_id" />
+                <ScalarProperty Name="experimentTime_startTime" ColumnName="experimentTime_startTime" />
+                <ScalarProperty Name="experimentTime_week" ColumnName="experimentTime_week" />
+                <ScalarProperty Name="experimentTime_ownExperimentId" ColumnName="experimentTime_ownExperimentId" />
+                <ScalarProperty Name="experimentTime_isDel" ColumnName="experimentTime_isDel" />
+                <ScalarProperty Name="experimentTime_peopleNum" ColumnName="experimentTime_peopleNum" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Professionals">
+            <EntityTypeMapping TypeName="WlhxModel.Professional">
+              <MappingFragment StoreEntitySet="Professionals">
+                <ScalarProperty Name="professionalDir_id" ColumnName="professionalDir_id" />
+                <ScalarProperty Name="professional_name" ColumnName="professional_name" />
+                <ScalarProperty Name="professional_isDel" ColumnName="professional_isDel" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StudentImgs">
+            <EntityTypeMapping TypeName="WlhxModel.StudentImg">
+              <MappingFragment StoreEntitySet="StudentImgs">
+                <ScalarProperty Name="studentImg_id" ColumnName="studentImg_id" />
+                <ScalarProperty Name="studentImg_url" ColumnName="studentImg_url" />
+                <ScalarProperty Name="studentImg_isDel" ColumnName="studentImg_isDel" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Students">
+            <EntityTypeMapping TypeName="WlhxModel.Student">
+              <MappingFragment StoreEntitySet="Students">
+                <ScalarProperty Name="student_id" ColumnName="student_id" />
+                <ScalarProperty Name="student_number" ColumnName="student_number" />
+                <ScalarProperty Name="student_name" ColumnName="student_name" />
+                <ScalarProperty Name="student_professional" ColumnName="student_professional" />
+                <ScalarProperty Name="student_class" ColumnName="student_class" />
+                <ScalarProperty Name="student_grade" ColumnName="student_grade" />
+                <ScalarProperty Name="student_password" ColumnName="student_password" />
+                <ScalarProperty Name="student_proDirectionId" ColumnName="student_proDirectionId" />
+                <ScalarProperty Name="student_isDel" ColumnName="student_isDel" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="无" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

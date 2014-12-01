@@ -1,0 +1,23 @@
+﻿<script type="text/javascript">
+    $.messager.progress({
+        title: "正在清理",
+        msg: "这能需要一些时间！",
+        text:"请稍等"
+    });
+    $.ajax({
+        type: "post",
+        url: "/User/ClearSystemIn",
+        success: function (data)
+        {
+            $.messager.progress('close');
+            if (data.status == "1")
+            {
+                $.messager.alert("提示", data.msg, "info");
+            }
+            else
+            {
+                $.messager.alert("错误", data.msg, "error");
+            }
+        }
+    })
+</script>

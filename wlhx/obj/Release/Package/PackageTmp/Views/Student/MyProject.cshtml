@@ -1,0 +1,22 @@
+﻿<table id="dg"></table>
+<script type="text/javascript">
+    $('#dg').datagrid({
+        url: '/Student/MyProjectList/@ViewBag.type',
+        fit: true,
+        singleSelect: true,
+        rownumbers: true,
+        striped: true,
+        fitColumns: true,
+        columns: [[
+            { field: 'id', title: '', hidden: true },
+            { field: 'title', title: '课题名称', width: 60 },
+            { field: 'num', title: '已选人数', width: 40, }
+        ]],
+        onLoadSuccess: function ()
+        {
+        }
+    });
+
+
+
+</script>

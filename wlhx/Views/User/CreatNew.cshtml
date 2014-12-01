@@ -1,0 +1,223 @@
+﻿<table id="table"></table>
+
+
+<script>
+    var editRow = null;
+    var addRow = null;
+    $("#table").datagrid({
+        fit: true,
+        fitColumns: true,
+        url: "/User/JsonCreat",
+        singleSelect: true,
+        striped: true,
+        pagination: true,
+        pageSize: 30,//每页显示的记录条数，默认为10
+        pageList: [10, 20, 30, 50],//每页显示几条记录
+        pageNumber: 1,
+        columns: [[
+            { field: 'id', hidden: true, },
+            { field: 'name', title: '课题名称', width: 50, editor: "validatebox" },
+            { field: 'allGrade', title: '可选年级', width: 50, editor: "validatebox" },
+            { field: 'number', title: '已选总数', width: 50, },
+             { field: 'max', title: '最大人数', width: 50, editor: "numberbox" }
+        ]],
+        toolbar: [{
+            id: "add",
+            iconCls: 'icon-add',
+            text: "添加",
+            handler: function () {
+                if (editRow != null) {
+                    $.messager.alert("提示", "您还有正在编辑的项");
+                    return;
+                }
+                if (addRow != null) {
+                    var index = $("#table").datagrid("getRowIndex", addRow);
+                    $("#table").datagrid("endEdit", index);
+
+
+                    if (addRow.name == "" || addRow.allGrade == "" || addRow.max=="") {
+                        $.messager.alert("提示", "不可有空值");
+                        $("#table").datagrid("beginEdit", index);
+                        return;
+                    }
+
+                    var a = addRow.allGrade.split(",");
+                    for (var i = 0; i < a.length; i++) {
+                        if (a[i] != '1' && a[i] != '2' && a[i] != '3' && a[i] != '4' && a[i] != '') {
+
+                            $("#table").datagrid("beginEdit", index);
+                            $.messager.alert("提示", "可选年级只可输入数字和英文逗号")
+                            return;
+                        }
+                    }
+
+                    $.ajax({
+                        type: "post",
+                        url: "/User/AddCreat",
+                        data: {
+                            name: addRow.name,
+                            allGrade: addRow.allGrade,
+                            max:addRow.max,
+                        },
+                        success: function (data) {
+                            var data = eval("(" + data + ")");
+                            if (data.back = "ok") {
+                                $.messager.alert("提示", "保存成功");
+                                addRow = null;
+                                $("#table").datagrid("reload");
+                                $("#add").linkbutton({
+                                    iconCls: 'icon-add',
+                                    text: "增加",
+                                })
+                            }
+                            else {
+                                $.messager.alert("提示", data.back);
+                            }
+                        }
+                    })
+                    return;
+                }
+                $('#table').datagrid('insertRow', {
+                    index: 0,	// 索引从0开始
+                    row: {
+                        name: '',
+                        allGrade: "1,2,3,4",
+                        max:""
+                    }
+                });
+                $('#table').datagrid('selectRow', 0);
+                addRow = $("#table").datagrid("getSelected");
+                $("#table").datagrid("beginEdit", 0);
+                $("#add").linkbutton({
+                    iconCls: 'icon-save',
+                    text: "保存",
+                })
+            }
+        }, {
+            id: "edit",
+            iconCls: 'icon-edit',
+            text: "编辑",
+            handler: function () {
+                if (addRow != null) {
+                    $.messager.alert("提示", "您还有正在编辑的项");
+                    return;
+                }
+
+                if (editRow != null) {
+                    //保存
+
+                    var index = $("#table").datagrid("getRowIndex", editRow);
+                    $("#table").datagrid("endEdit", index);
+
+
+                    if (editRow.name == "" || editRow.allGrade == ""||editRow.max=="") {
+                        $.messager.alert("提示", "不可有空值");
+                        return;
+                    }
+
+                    var a = editRow.allGrade.split(",");
+                    for (var i = 0; i < a.length; i++) {
+                        if (a[i] != '1' && a[i] != '2' && a[i] != '3' && a[i] != '4' && a[i] != '') {
+
+                            $("#table").datagrid("beginEdit", index);
+                            $.messager.alert("提示", "可选年级只可输入数字和英文逗号")
+                            return;
+                        }
+                    }
+
+                    $.ajax({
+                        type: "post",
+                        url: "/User/EditCreatity",
+                        data: {
+                            id: editRow.id,
+                            name: editRow.name,
+                            allGrade: editRow.allGrade,
+                            max:editRow.max
+                        },
+                        success: function (data) {
+                            var data = eval("(" + data + ")");
+                            if (data.back = "ok") {
+                                $.messager.alert("提示", "保存成功");
+                                editRow = null;
+                                $("#table").datagrid("reload");
+                                $("#edit").linkbutton({
+                                    iconCls: 'icon-edit',
+                                    text: "编辑",
+                                })
+                            }
+                        }
+                    })
+                    return;
+                }
+                editRow = $("#table").datagrid("getSelected");
+                if (editRow == null) {
+                    $.messager.alert("提示", "请选择条目");
+                    return;
+                }
+                var index = $("#table").datagrid("getRowIndex", editRow);
+                $("#table").datagrid("beginEdit", index);
+                $("#edit").linkbutton({
+                    iconCls: 'icon-save',
+                    text: "保存",
+                })
+            }
+        }, {
+            iconCls: 'icon-remove',
+            text: "删除",
+            handler: function () {
+                if (editRow != null) {
+                    $.messager.alert("提示", "您还有正在编辑的项目");
+                    return;
+                }
+                var delRow = $("#table").datagrid("getSelected");
+                var index = $("#table").datagrid("getRowIndex", delRow)
+                if (delRow == null) {
+                    $.messager.alert("请选择要删除的条目");
+                    return;
+                }
+                $.messager.confirm('确认', '您确认想要删除记录吗？', function (r) {
+                    if (r) {
+                        $.ajax({
+                            type: "post",
+                            url: "/User/RemoveExperiment/" + delRow.id,
+                            success: function (data) {
+                                var data = eval("(" + data + ")");
+                                if (data.back == "ok") {
+                                    $.messager.alert("提示", "删除成功");
+                                    $("#table").datagrid("deleteRow", index)
+                                }
+                                else {
+                                    $.messager.alert("提示", data.back);
+                                }
+                            }
+                        })
+
+                    }
+                });
+            }
+        }, {
+            iconCls: 'icon-see',
+            text: "查看预约人员",
+            handler: function () {
+                var se = $("#table").datagrid("getSelected");
+                if (se == null) {
+                    $.messager.alert("提示", "请选择要查看的课题");
+                    return;
+                }
+                $("#cc").append("<div id='win'></div>");
+                $('#win').window({
+                    width: 600,
+                    height: 400,
+                    modal: true,
+                    title:se.name,
+                    href: "/User/CreatStudent/" + se.id,
+                });
+              
+
+               
+            }
+        }
+        ]
+    })
+
+</script>

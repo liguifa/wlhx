@@ -1,0 +1,347 @@
+﻿<table id="dg"></table>
+<script type="text/javascript">
+    var PageIndex = 1;
+    var PageSize = 30;
+    var gade = 0;
+    var index = -1;
+    var isAdd = false;
+    var isEdit = false;
+    $('#dg').datagrid({
+        fit: true,
+        url:"/User/GetSenioProjectList",
+        singleSelect: true,
+        rownumbers: true,
+        striped: true,
+        fitColumns: true,
+        pagination: true,
+        pageSize: PageSize,//每页显示的记录条数，默认为10
+        pageList: [10, 20, 30, 50],//每页显示几条记录
+        beforePageText: '第',//页数文本框前显示的汉字
+        pageNumber: PageIndex,
+        total: 300,
+        afterPageText: '页    共 {pages} 页',
+        displayMsg: '当前显示 {from} - {to} 条记录    共 {total} 条记录',
+        queryParams: {
+            gade: gade,
+        },
+        columns: [[
+            { field: 'id', hidden: true, },
+            { field: 'title', title: '课题名称', width: 40, editor: "validatebox" },
+            { field: 'grade', title: '可选年级', width: 30, editor: "validatebox" },
+            { field: 'totalNum', title: '最大人数', width: 15, editor: "validatebox" },
+            { field: 'chooseNum', title: '已选人数', width: 15 },
+        ]],
+        toolbar: [{
+            id:"add",
+            iconCls: 'icon-add',
+            text: "添加",
+            handler: function ()
+            {
+                $('#dg').datagrid('insertRow', {
+                    index: 0,	// 索引从0开始
+                    row: {
+                       
+                    }
+                });
+                $("#dg").datagrid("beginEdit", 0);
+                index = 0;
+                isAdd = true;
+            }
+        }, '-', {
+            id:"edit",
+            iconCls: 'icon-edit',
+            text: "编辑",
+            disabled: true,
+            handler: function ()
+            {
+                var rows = $("#dg").datagrid("getSelections");
+                if (rows.length == 0)
+                {
+                    $.messager.alert("错误", "你未选中任何一行！", "error");
+                    return null;
+                }
+                index=$("#dg").datagrid("getRowIndex",rows[0]);
+                $("#dg").datagrid("beginEdit", index);
+                isEdit = true;
+            }
+        }, '-', {
+            id:"remove",
+            iconCls: 'icon-remove',
+            text: "删除",
+            disabled: true,
+            handler: function ()
+            {
+                var rows = $("#dg").datagrid("getSelections");
+                if (rows.length == 0)
+                {
+                    $.messager.alert("错误", "你未选中任何一行！", "error");
+                    return null;
+                }
+                index = $("#dg").datagrid("getRowIndex", rows[0]);
+                $.messager.confirm('提示', '是否确定删除？', function (r)
+                {
+                    if (r)
+                    {
+                        $.ajax({
+                            type: "post",
+                            url: "/User/RemoveProjectFromSenior",
+                            data: {
+                                id: rows[0].id,
+                            },
+                            success: function (data)
+                            {
+                                if (data.status == "1")
+                                {
+                                    $.messager.alert("提示", data.msg, "info");
+                                    $("#dg").datagrid("deleteRow", index);
+                                }
+                                else
+                                {
+                                    $.messager.alert("错误", data.msg, "error");
+                                }
+                            }
+                        })
+                    }
+                });
+            }
+        }, '-', {
+            id: "save",
+            iconCls: 'icon-save',
+            text: "保存",
+            disabled: true,
+            handler: function ()
+            {
+                $("#dg").datagrid("endEdit", index)
+            }
+        }, '-', {
+            id: "search",
+            iconCls: 'icon-see',
+            text: "查看学生名单",
+            handler: function ()
+            {
+                var rows = $("#dg").datagrid("getSelections");
+                if (rows.length == 0)
+                {
+                    $.messager.alert("错误", "你未选中任何一行！", "error");
+                    return null;
+                }
+                $("#cc").append("<div id=\"dd\"></div> ");
+                $('#dd').window({
+                    width: 600,
+                    height: 400,
+                    title:rows[0].title+"学生名单",
+                    href:"/User/GetSenionrProjectStudent/"+rows[0].id,
+                    content:"<div style='windth:180px;margin:auto;margin-top:100px;text-align:center'><img src=\"../../images/loading.gif\"><p>玩命加载中....</p><div>",
+                    modal: true
+                });
+            }
+        }],
+        onSelect: function (rowIndex, rowData)
+        {
+            if (isAdd || isEdit)
+            {
+                $.messager.confirm('提示', '你还有编辑的行是否放弃？', function (r)
+                {
+                    if (r)
+                    {
+                        isAdd = false;
+                        isEdit = false;
+                        $("#edit").linkbutton("enable");
+                        $("#remove").linkbutton("enable");
+                        $("#save").linkbutton("disable");
+                    }
+                });
+            }
+            else
+            {
+                $("#edit").linkbutton("enable");
+                $("#remove").linkbutton("enable");
+                $("#save").linkbutton("disable");
+            }
+                
+        },
+        onBeforeEdit:function()
+        {
+            $("#add").linkbutton("disable");
+            $("#edit").linkbutton("disable");
+            $("#remove").linkbutton("disable");
+            $("#save").linkbutton("enable");
+        },
+        onAfterEdit: function (rowIndex, rowData, changes)
+        {
+            if (isAdd)
+            {
+                if (changes.title + "" == "undefined" || changes.grade + "" == "undefined" || changes.totalNum + "" == "undefined")
+                {
+                    isAdd = false;
+                    return null;
+                }
+                if (changes.title.length <= 25)
+                {
+                    var num = parseInt(changes.totalNum);
+                    if (num >= 1)
+                    {
+                        var grade = changes.grade.split(',');
+                        for (var x in grade)
+                        {
+                            if (!(grade[x] == "1" || grade[x] == "2" || grade[x] == "3" || grade[x] == "4"))
+                            {
+                                $.messager.alert("错误", "可选年级为1、2、3、4四个选项，多个年级请用“,”分隔！", "error");
+                                $("#dg").datagrid("beginEdit", index);
+                                return null;
+                            }
+                            
+                        }
+                        $.ajax({
+                            type: "post",
+                            url: "/User/AddProjectFromSenior",
+                            data: {
+                                id: rowData.id,
+                                title: changes.title,
+                                grade: changes.grade,
+                                totalNum: changes.totalNum,
+                            },
+                            success: function (data)
+                            {
+                                if (data.status == "1")
+                                {
+                                    $.messager.alert("提示", data.msg, "info");
+                                    $("#dg").datagrid("reload");
+                                    isAdd = false;
+                                    $("#add").linkbutton("enable");
+                                    $("#edit").linkbutton("enable");
+                                    $("#remove").linkbutton("enable");
+                                    $("#save").linkbutton("disable");
+                                }
+                                else
+                                {
+                                    $.messager.alert("错误", data.msg, "error");
+                                    $("#dg").datagrid("beginEdit", index);
+                                }
+                            }
+                        })
+                    }
+                    else
+                    {
+                        $.messager.alert("错误", "最大人数至少大于1！", "error");
+                        $("#dg").datagrid("beginEdit", index);
+                    }
+                }
+                else
+                {
+                    $.messager.alert("错误", "课题名称应小于25个汉字！", "error");
+                    $("#dg").datagrid("beginEdit",index);
+                }
+            }
+            else if (isEdit)
+            {
+                if (changes.title + "" == "undefined" && changes.grade + "" == "undefined" && changes.totalNum + "" == "undefined")
+                {
+                    isEdit = false;
+                    return null;
+                }
+                var title = changes.title + "" == "undefined" ? rowData.title : changes.title;
+                var grades = changes.grade + "" == "undefined" ? rowData.grade : changes.grade;
+                var totalNum = changes.totalNum + "" == "undefined" ? rowData.totalNum : changes.totalNum;
+                if (title.length <= 25)
+                {
+                    var num = parseInt(totalNum);
+                    if (num >= 1)
+                    {
+                        var grade = grades.split(',');
+                        for (var x in grade)
+                        {
+                            if (!(grade[x] == "1" || grade[x] == "2" || grade[x] == "3" || grade[x] == "4"))
+                            {
+                                $.messager.alert("错误", "可选年级为1、2、3、4四个选项，多个年级请用“,”分隔！", "error");
+                                $("#dg").datagrid("beginEdit", index);
+                                return null;
+                            }
+
+                        }
+                        $.ajax({
+                            type: "post",
+                            url: "/User/EditProjectFromSenior",
+                            data: {
+                                id: rowData.id,
+                                title: title,
+                                grade: grades,
+                                totalNum: totalNum,
+                            },
+                            success: function (data)
+                            {
+                                if (data.status == "1")
+                                {
+                                    $.messager.alert("提示", data.msg, "info");
+                                    $("#dg").datagrid("reload");
+                                    isEdit = false;
+                                    $("#add").linkbutton("enable");
+                                    $("#edit").linkbutton("enable");
+                                    $("#remove").linkbutton("enable");
+                                    $("#save").linkbutton("disable");
+                                }
+                                else
+                                {
+                                    $.messager.alert("错误", data.msg, "error");
+                                    $("#dg").datagrid("beginEdit", index);
+                                }
+                            }
+                        })
+                    }
+                    else
+                    {
+                        $.messager.alert("错误", "最大人数至少大于1！", "error");
+                        $("#dg").datagrid("beginEdit", index);
+                    }
+                }
+                else
+                {
+                    $.messager.alert("错误", "课题名称应小于25个汉字！", "error");
+                    $("#dg").datagrid("beginEdit", index);
+                }
+            }
+        }
+    });
+    $("#dg").ready(function ()
+    {
+        function LoadPageation()
+        {
+            var p = $("#dg").datagrid('getPager');
+            $(p).pagination
+                ({
+                    pageSize: PageSize,//每页显示的记录条数，默认为10
+                    pageList: [10, 20, 30, 50],//每页显示几条记录
+                    beforePageText: '第',//页数文本框前显示的汉字
+                    pageNumber: PageIndex,
+                    total: 300,
+                    afterPageText: '页    共 {pages} 页',
+                    displayMsg: '显示{from}到{to} 共 {total} 条记录',
+                    onSelectPage: function (pageNumber, pageSize)
+                    {
+                        PageIndex = pageNumber;
+                        PageSize = pageSize;
+                        $('#dg').datagrid({
+                            pageSize: PageSize,//每页显示的记录条数，默认为10
+                            pageNumber: PageIndex,
+                        });
+                        $(p).pagination("loading");
+                        $("#dg").datagrid("loading");
+                        $("#dg").datagrid({
+                            queryParams: {
+                                gade: gade,
+                                pageIndex: pageNumber,
+                                pageSize: pageSize
+                            }
+                        });
+                        $("#dg").datagrid("reload");
+
+                        LoadPageation();
+
+                    },
+                });
+        }
+        LoadPageation();
+    });
+
+
+</script>

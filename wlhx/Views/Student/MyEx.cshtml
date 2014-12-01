@@ -1,0 +1,19 @@
+﻿<table id="table">
+
+</table>
+<script>
+    $("#table").datagrid({
+        url: '/Student/MyExJson',
+        fit: true,
+        singleSelect: true,
+        rownumbers: true,
+        striped: true,
+        fitColumns: true,
+        columns: [[
+            { field: 'title', title: '课题名称', width: 60 },
+            { field: 'week', title: '周次', width: 60 },
+            { field: 'time', title: '时间', width: 60 },
+            { field: 'max', title: '最大人数', width: 40, }
+        ]],
+    })
+</script>

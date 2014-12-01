@@ -1,0 +1,126 @@
+﻿<table id="dg"></table>
+<script src="~/js/DynamicRemove.js"></script>
+<script type="text/javascript">
+    var index = -1;
+    var isedit = false;
+    var isadd = false;
+    var PageIndex = 1;
+    var PageSize = 30;
+    var Address = [{ "value": "0", "text": "超级管理员" }, { "value": "1", "text": "管理员" }];
+    $('#dg').datagrid({
+        fit: true,
+        url: "/User/GetDyamicListJson/@ViewBag.type/1/30/1",
+        singleSelect: true,
+        rownumbers: true,
+        striped: true,
+        fitColumns: true,
+        pagination: true,
+        pageSize: PageSize,//每页显示的记录条数，默认为10
+        pageList: [10, 20, 30, 50],//每页显示几条记录
+        beforePageText: '第',//页数文本框前显示的汉字
+        pageNumber: PageIndex ,
+        total: 300,
+        afterPageText: '页    共 {pages} 页',
+        displayMsg: '当前显示 {from} - {to} 条记录    共 {total} 条记录',
+        columns: [[
+            { field: 'id', hidden: true, },
+            { field: 'title', title: '标题', width: 100, },
+            { field: 'body', title: '内容', width: 100, },
+            { field: 'time', title: '发表时间', width: 100, },
+            { field: 'index', title: '首页', width: 100, }
+        ]],
+        toolbar: [{
+            id: "edit",
+            iconCls: 'icon-edit',
+            text: '编辑',
+            disabled: true,
+            handler: function ()
+            {
+                var rows = $("#dg").datagrid("getSelections");
+                if (rows.length == 0)
+                {
+                    $.messager.alert("提示", "你未选择任何一行！");
+                    return;
+                }
+                $(".window").remove();
+                $(".window-shadow").remove();
+                $(".window-mask").remove();
+                $("body").append("<div id=\"win\"><iframe src=\"/User/Editors/@ViewBag.type/" + rows[0].id + "\" style=\"width:99%;height:99% ;overflow-x:hidden\" ></iframe></div>");
+                $('#win').window({
+                    title: "内容编辑",
+                    width: 600,
+                    height: 400,
+                    maximized: true,
+                    modal: true
+                });
+            }
+        }, '-', {
+            id: "remove",
+            iconCls: 'icon-remove',
+            text: '删除',
+            disabled: true,
+            handler: function ()
+            {
+                var rows = $("#dg").datagrid("getSelections");
+                $.messager.confirm("提示", "是否确定删除！删除后不能恢复....", function (r)
+                {
+                    if (r)
+                    {
+                        DynamicRemove(rows[0].id, $("#dg").datagrid("getRowIndex", rows[0]));
+                    }
+                });
+            }
+        }],
+        onUnselectAll: function ()
+        {
+            $("#edit").linkbutton('disable');
+            $("#edit").linkbutton('disable');
+        },
+        onSelect: function (rowIndex, rowData)
+        {
+            $("#edit").linkbutton('enable');
+            $("#remove").linkbutton('enable');
+
+        },
+    });
+    $("#dg").ready(function ()
+    {
+        function LoadPageation()
+        {
+            var p = $("#dg").datagrid('getPager');
+            $(p).pagination
+                ({
+                    pageSize: PageSize,//每页显示的记录条数，默认为10
+                    pageList: [10, 20, 30, 50],//每页显示几条记录
+                    beforePageText: '第',//页数文本框前显示的汉字
+                    pageNumber: PageIndex,
+                    total: 300,
+                    afterPageText: '页    共 {pages} 页',
+                    displayMsg: '当前显示 {from} - {to} 条记录    共 {total} 条记录',
+                    onSelectPage: function (pageNumber, pageSize)
+                    {
+                        PageIndex = pageNumber;
+                        PageSize = pageSize;
+                        $('#dg').datagrid({
+                            pageSize: PageSize,//每页显示的记录条数，默认为10
+                            pageNumber: PageIndex,
+                        });
+                        $(p).pagination("loading");
+                        $("#dg").datagrid("loading");
+                        $("#dg").datagrid({
+                            queryParams: {
+                                id: '@ViewBag.type',
+                                pageIndex: pageNumber,
+                                pageSize: pageSize
+                            }
+                        });
+                        $("#dg").datagrid("reload");
+                        LoadPageation();
+
+                    },
+                });
+        }
+        LoadPageation();
+
+    })
+</script>

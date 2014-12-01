@@ -1,0 +1,53 @@
+﻿<table id="dg"></table>
+<script type="text/javascript">
+    $('#dg').datagrid({
+        url: '/Student/GetProfessionaLEmphasis',
+        fit: true,
+        singleSelect: true,
+        rownumbers: true,
+        striped: true,
+        fitColumns: true,
+        columns: [[
+            { field: 'id', title: '', hidden: true },
+            { field: 'name', title: '方向', width: 60 },
+            { field: 'choose', title: '选择', width: 40, }
+        ]],
+        onLoadSuccess: function ()
+        {
+            $(".choose").click(function ()
+            {
+                var value = $(this).val();
+                $.messager.confirm('提示', '是否确定选择？选择后不能修改！', function (r)
+                {
+                    if (r)
+                    {
+                        $("#dg").datagrid("loading");
+                        $.ajax({
+                            type: "post",
+                            url: "/Student/ProfessionChoose",
+                            data: {
+                                id: value,
+                            },
+                            success: function (data)
+                            {
+                                $("#dg").datagrid("loaded");
+                                if (data.status == "1")
+                                {
+                                    $.messager.alert("提示", data.msg, "info");
+                                    $("#dg").datagrid("reload", null);
+                                }
+                                else
+                                {
+                                    $.messager.alert("错误", data.msg, "info");
+                                }
+                            }
+                        })
+                    }
+                });
+            });
+        }
+    });
+
+
+
+</script>

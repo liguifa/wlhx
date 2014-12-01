@@ -1,0 +1,213 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="WlhxModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Admin">
+    <Key>
+      <PropertyRef Name="admin_id" />
+    </Key>
+    <Property Name="admin_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="admin_username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="admin_password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="admin_power" Type="Int32" Nullable="false" />
+    <Property Name="admin_isDel" Type="Boolean" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Choos">
+    <Key>
+      <PropertyRef Name="choose_id" />
+    </Key>
+    <Property Name="choose_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="choose_ownStudentId" Type="Int64" Nullable="false" />
+    <Property Name="choose_ownExperimentId" Type="Int64" Nullable="false" />
+    <Property Name="choose_isDel" Type="Boolean" Nullable="false" />
+    <Property Name="choose_ExperimenTimet" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Experiment" Relationship="Self.FK_Chooses_Experiments" FromRole="Chooses" ToRole="Experiments" />
+    <NavigationProperty Name="Student" Relationship="Self.FK_Chooses_Students" FromRole="Chooses" ToRole="Students" />
+  </EntityType>
+  <EntityType Name="Dynamic">
+    <Key>
+      <PropertyRef Name="dynamic_id" />
+    </Key>
+    <Property Name="dynamic_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="dynamic_title" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="dynamic_body" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="dynamic_publicTime" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="dynamic_class" Type="Int32" Nullable="false" />
+    <Property Name="dynamic_isIndex" Type="Boolean" />
+    <Property Name="dynamic_isDel" Type="Boolean" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Experiment">
+    <Key>
+      <PropertyRef Name="experiment_id" />
+    </Key>
+    <Property Name="experiment_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="experiment_title" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="experiment_class" Type="Int32" Nullable="false" />
+    <Property Name="experiment_peopleNum" Type="Int32" Nullable="false" />
+    <Property Name="experiment_isDel" Type="Boolean" Nullable="false" />
+    <Property Name="experiment_allowGrades" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="experiment_week" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Chooses" Relationship="Self.FK_Chooses_Experiments" FromRole="Experiments" ToRole="Chooses" />
+    <NavigationProperty Name="ExperimentTimes" Relationship="Self.FK_ExperimentTimes_Experiments" FromRole="Experiments" ToRole="ExperimentTimes" />
+  </EntityType>
+  <EntityType Name="ExperimentTime">
+    <Key>
+      <PropertyRef Name="experimentTime_id" />
+    </Key>
+    <Property Name="experimentTime_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="experimentTime_startTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="experimentTime_week" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="experimentTime_ownExperimentId" Type="Int64" Nullable="false" />
+    <Property Name="experimentTime_isDel" Type="Boolean" Nullable="false" />
+    <Property Name="experimentTime_peopleNum" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Experiment" Relationship="Self.FK_ExperimentTimes_Experiments" FromRole="ExperimentTimes" ToRole="Experiments" />
+  </EntityType>
+  <EntityType Name="Professional">
+    <Key>
+      <PropertyRef Name="professionalDir_id" />
+    </Key>
+    <Property Name="professionalDir_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="professional_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="professional_isDel" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="Students" Relationship="Self.FK_Students_Professionals" FromRole="Professionals" ToRole="Students" />
+  </EntityType>
+  <EntityType Name="Student">
+    <Key>
+      <PropertyRef Name="student_id" />
+    </Key>
+    <Property Name="student_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="student_number" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="student_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="student_professional" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="student_class" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="student_grade" Type="Int32" Nullable="false" />
+    <Property Name="student_password" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="student_proDirectionId" Type="Int64" />
+    <Property Name="student_isDel" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="Chooses" Relationship="Self.FK_Chooses_Students" FromRole="Students" ToRole="Chooses" />
+    <NavigationProperty Name="Professional" Relationship="Self.FK_Students_Professionals" FromRole="Students" ToRole="Professionals" />
+  </EntityType>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <Association Name="FK_Chooses_Experiments">
+    <End Role="Experiments" Type="Self.Experiment" Multiplicity="1" />
+    <End Role="Chooses" Type="Self.Choos" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Experiments">
+        <PropertyRef Name="experiment_id" />
+      </Principal>
+      <Dependent Role="Chooses">
+        <PropertyRef Name="choose_ownExperimentId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Chooses_Students">
+    <End Role="Students" Type="Self.Student" Multiplicity="1" />
+    <End Role="Chooses" Type="Self.Choos" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Students">
+        <PropertyRef Name="student_id" />
+      </Principal>
+      <Dependent Role="Chooses">
+        <PropertyRef Name="choose_ownStudentId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ExperimentTimes_Experiments">
+    <End Role="Experiments" Type="Self.Experiment" Multiplicity="1" />
+    <End Role="ExperimentTimes" Type="Self.ExperimentTime" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Experiments">
+        <PropertyRef Name="experiment_id" />
+      </Principal>
+      <Dependent Role="ExperimentTimes">
+        <PropertyRef Name="experimentTime_ownExperimentId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Students_Professionals">
+    <End Role="Professionals" Type="Self.Professional" Multiplicity="0..1" />
+    <End Role="Students" Type="Self.Student" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Professionals">
+        <PropertyRef Name="professionalDir_id" />
+      </Principal>
+      <Dependent Role="Students">
+        <PropertyRef Name="student_proDirectionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="WlhxEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Admins" EntityType="Self.Admin" />
+    <EntitySet Name="Chooses" EntityType="Self.Choos" />
+    <EntitySet Name="Dynamics" EntityType="Self.Dynamic" />
+    <EntitySet Name="Experiments" EntityType="Self.Experiment" />
+    <EntitySet Name="ExperimentTimes" EntityType="Self.ExperimentTime" />
+    <EntitySet Name="Professionals" EntityType="Self.Professional" />
+    <EntitySet Name="Students" EntityType="Self.Student" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+    <AssociationSet Name="FK_Chooses_Experiments" Association="Self.FK_Chooses_Experiments">
+      <End Role="Experiments" EntitySet="Experiments" />
+      <End Role="Chooses" EntitySet="Chooses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Chooses_Students" Association="Self.FK_Chooses_Students">
+      <End Role="Students" EntitySet="Students" />
+      <End Role="Chooses" EntitySet="Chooses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ExperimentTimes_Experiments" Association="Self.FK_ExperimentTimes_Experiments">
+      <End Role="Experiments" EntitySet="Experiments" />
+      <End Role="ExperimentTimes" EntitySet="ExperimentTimes" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Students_Professionals" Association="Self.FK_Students_Professionals">
+      <End Role="Professionals" EntitySet="Professionals" />
+      <End Role="Students" EntitySet="Students" />
+    </AssociationSet>
+    <FunctionImport Name="sp_alterdiagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="version" Mode="In" Type="Int32" />
+      <Parameter Name="definition" Mode="In" Type="Binary" />
+    </FunctionImport>
+    <FunctionImport Name="sp_creatediagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="version" Mode="In" Type="Int32" />
+      <Parameter Name="definition" Mode="In" Type="Binary" />
+    </FunctionImport>
+    <FunctionImport Name="sp_dropdiagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(WlhxModel.sp_helpdiagramdefinition_Result)">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(WlhxModel.sp_helpdiagrams_Result)">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_renamediagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="new_diagramname" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="sp_upgraddiagrams" />
+  </EntityContainer>
+  <ComplexType Name="sp_helpdiagramdefinition_Result">
+    <Property Type="Int32" Name="version" Nullable="true" />
+    <Property Type="Binary" Name="definition" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="sp_helpdiagrams_Result">
+    <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+    <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+    <Property Type="Int32" Name="ID" Nullable="false" />
+    <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+    <Property Type="Int32" Name="OwnerID" Nullable="false" />
+  </ComplexType>
+</Schema>

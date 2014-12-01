@@ -1,0 +1,144 @@
+@using wlhx.Models;
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="keywords" content="大连工业大学,无机材料实验教学中心,无机材料,实验教学中心,无机材料研究所,辽宁省重点实验室,硅酸盐工程实验室" />
+    <meta name="description" content="大连工业大学无机材料实验室，原为硅酸盐工程实验室，始建于1958年，是我校建校初始就创建的实验室之一。经过50余年的发展，已经逐步形成了以玻璃、陶瓷材料为教学实验，以无机新材料为研究实验的特色人才培养体系，注重实践与创新能力的培养和建设，并取得了辉煌的成绩。" />
+    <title>无机材料实验教学中心-新闻中心</title>
+    <!-- Bootstrap -->
+    <link href="~/css/bootstrap.css" rel='stylesheet' type='text/css' />
+    <link href="~/css/bootstrap.min.css" rel='stylesheet' type='text/css' />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <!--[if lt IE 9]>
+         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="~/css/style.css" rel="stylesheet" type="text/css" media="all" />
+    <!-- start plugins -->
+    <script type="text/javascript" src="~/js/jquery.min.js"></script>
+    <script type="text/javascript" src="~/js/bootstrap.js"></script>
+    <script type="text/javascript" src="~/js/bootstrap.min.js"></script>
+    <!----font-Awesome----->
+    <link rel="stylesheet" href="~/css/font-awesome.min.css">
+    <!----font-Awesome----->
+</head>
+<body>
+    <div class="header_bg1" style="background: url('/images/head2.png') no-repeat left;">
+        <div class="container">
+            <div class="row header">
+                <div class="logo navbar-left">
+                    <h1><a href="/Home/Index">无机材料实验教学中心 </a></h1>
+                    <p>Experimental Teaching Center of Inorganic Materials</p>
+                </div>
+                <div class="h_search navbar-right">
+                    <form action="http://cn.bing.com/search" target="_blank">
+                        <input type="text" class="text" name="q" value="搜索内容" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = '搜索内容';}">
+                        <input type="submit" value="搜索">
+                    </form>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+    @Html.Partial("~/Views/Home/Head.cshtml")
+    <script>
+        $("#li3").addClass("active");
+        window.onload = function ()
+        {
+            var a = navigator.appVersion;
+            var patt1 = new RegExp(/MSIE \d\d?/);
+            var b = patt1.exec(a) + "";
+            b = parseInt(b.split("MSIE ")[1])
+            if (b < 9)
+            {
+                location.href = "/Home/BrowserError";
+            }
+        }
+    </script>
+    <style>
+        img {
+            width: 150px;
+            height: 100px;
+            float: left;
+            margin-right: 15px;
+        }
+    </style>
+    <div class="clearfix"></div>
+
+    <div class="main_bg">
+        <!-- start main -->
+        <div class="container">
+            <div class="technology row">
+                <h2>新闻中心</h2>
+                @foreach (Dynamic d in ViewBag.newsList)
+                {
+                    string context = d.dynamic_body;
+                    System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex("<img src=\"[^>]*\" />");
+                    System.Text.RegularExpressions.Match m = r.Match(context);
+                    string img = m.Value == "" ? "<img src=\"/images/r3.jpg\" width=\"150\" height=\"100\" style=\"float:left;margin-right:15px;\" />" : m.Value;
+                    string html = wlhx.Common.CheckStr.checkStr(context);
+                    html = html.Length >= 250 ? html.Substring(0, 250) : html;
+                    <div class="technology_list">
+                        <a href="/Home/See/@d.dynamic_id/@d.dynamic_class/li3">	<h4 style="color:black">@d.dynamic_title</h4></a>
+                        <h5 style="float:right;margin-top:-30px">@d.dynamic_publicTime</h5>
+                        <script>
+                            var img = "@img";
+                            
+                            document.write(img.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, "\""));
+                           
+                        </script>
+
+                        <div class="col-md-15 tech_para">
+                            <p style="text-indent: 2em;text-align:left;" class="para">@html</p>
+                        </div>
+
+                        <div class="clearfix"></div>
+                        <div class="read_more" style="float:right;margin-top:-32px;">
+                            <a style="margin:0px;" href="/Home/See/@d.dynamic_id/@d.dynamic_class/li3" target="_blank" class="fa-btn btn-1 btn-1e">查看更多</a>
+                        </div>
+                    </div>
+                    <hr />
+                }
+                @if (ViewBag.newsList.Count == 0)
+                {
+                    <div class="alert alert-danger">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        <strong>提示</strong>已无更多
+                    </div>
+                }
+
+
+                <ul class="pagination" style="float:right;margin:0px;margin-top:60px">
+                    <li><a href="/Home/Dynamic">&laquo;</a></li>
+                    @{
+                        if (ViewBag.pageIndex < 3)
+                        {
+                            <li class="active"><a href="/Home/Dynamic/@ViewBag.pageIndex">@ViewBag.pageIndex</a></li>
+                            <li><a href="/Home/Dynamic/@(ViewBag.pageIndex+1)">@(ViewBag.pageIndex + 1)</a></li>
+                            <li><a href="/Home/Dynamic/@(ViewBag.pageIndex+2)">@(ViewBag.pageIndex + 2)</a></li>
+                            <li><a href="/Home/Dynamic/@(ViewBag.pageIndex+3)">@(ViewBag.pageIndex + 3)</a></li>
+                            <li><a href="/Home/Dynamic/@(ViewBag.pageIndex+4)">@(ViewBag.pageIndex + 4)</a></li>
+                            <li><a href="/Home/Dynamic/@(ViewBag.totalPage)">&raquo;</a></li>
+                        }
+                        else
+                        {
+                            <li><a href="/Home/Dynamic/@(ViewBag.pageIndex-2)">@(ViewBag.pageIndex - 2)</a></li>
+                            <li><a href="/Home/Dynamic/@(ViewBag.pageIndex-1)">@(ViewBag.pageIndex - 1)</a></li>
+                            <li class="active"><a href="/Home/Dynamic/@ViewBag.pageIndex">@ViewBag.pageIndex</a></li>
+                            <li><a href="/Home/Dynamic/@(ViewBag.pageIndex+2)">@(ViewBag.pageIndex + 1)</a></li>
+                            <li><a href="/Home/Dynamic/@(ViewBag.pageIndex+3)">@(ViewBag.pageIndex + 2)</a></li>
+                            <li><a href="/Home/Dynamic/@(ViewBag.totalPage)">&raquo;</a></li>
+                        }
+                    }
+                </ul>
+                <div class="alert alert-warning alert-dismissable" style="float:left">
+                    <button style="float:right" type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <strong>共 @ViewBag.totalNum 条数据</strong>
+                </div>
+            </div>
+        </div>
+    </div><!-- end main -->
+    @Html.Partial("~/Views/Home/foot.cshtml")
+</body>
+</html>

@@ -1,0 +1,156 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link href="~/EasyUI/themes/bootstrap/easyui.css" rel="stylesheet" />
+
+    <link href="~/EasyUI/jquery-easyui-14%e4%b8%aa%e4%b8%bb%e9%a2%98/metro-gray/easyui.css" rel="stylesheet" />
+    <link href="~/EasyUI/themes/icon.css" rel="stylesheet" />
+    <script src="~/EasyUI/jquery.min.js"></script>
+    <script src="~/js/validatebox.js"></script>
+    <script src="~/EasyUI/jquery.easyui.min.js"></script>
+    <script src="~/EasyUI/locale/easyui-lang-zh_CN.js"></script>
+    <script src="~/js/management.js"></script>
+    <script src="~/js/nicEdit.js"></script>
+    <script src="~/EasyUI/locale/easyui-lang-zh_CN.js"></script>
+    <style type="text/css">
+        .nav {
+            list-style: none;
+            margin: 0px;
+            margin-top: 12px;
+            margin-left: -26px;
+        }
+
+            .nav > li {
+                width: 90%;
+                height: 20px;
+                margin-top: 15px;
+                padding-top: 8px;
+                text-align: center;
+                cursor: pointer;
+                -moz-user-select: none; /*火狐*/
+                -webkit-user-select: none; /*webkit浏览器*/
+                -ms-user-select: none; /*IE10*/
+                -khtml-user-select: none; /*早期浏览器*/
+                user-select: none;
+                background-color: #E5EEF7;
+                /*padding: 5px 0;
+                cursor: pointer;
+                margin: 0px;
+                width: 88%;*/
+            }
+
+                .nav > li:hover {
+                    color: #ff6a00;
+                }
+
+        .action {
+            border: 1px solid #928a04;
+            background: #e2d108;
+        }
+
+            .action:hover {
+                color: #000;
+            }
+
+        .liimage {
+            vertical-align: middle;
+            margin-top: -5px;
+            margin-right: 2px;
+        }
+    </style>
+    <script type="text/javascript">
+        $(".panel-title").ready(function(){
+            $(".panel-title:last").append("<a href=\"/\" style='float:right'>返回首页</a>");
+        })
+    </script>
+</head>
+<body id="cc" data-options="fit:true" class=" easyui-layout" style="overflow-x:hidden">
+    <div data-options="region:'west',title:'管理导航',split:true,width:200">
+        <div id="aa" class="easyui-accordion" data-options="fit:true">
+            <div title="学生工作" data-options="iconCls:'icon-add'">
+                <ul class="nav">
+                    <li value="131"><img class="liimage" src="~/images/info.png" />学生信息管理</li>
+                    <li value="132"><img class="liimage" src="~/images/exper.png" />实验预约管理</li>
+                    <li value="133"><img class="liimage" src="~/images/dir.png" />专业方向管理</li>
+                    <li value="134"><img class="liimage" src="~/images/123.png" />毕业课题管理</li>
+                    <li value="135"><img class="liimage" src="~/images/creatnet.png" />创新创业管理 </li>
+                </ul>
+            </div>
+
+            <div title="通知公告" data-options="iconCls:'icon-add'">
+                <ul class="nav">
+                    <li value="21">
+                        <img class="liimage" src="~/images/notice.png" />添加通知
+                    </li>
+                    <li value="22">
+                        <img class="liimage" src="~/images/add.png" />通知列表
+                    </li>
+                </ul>
+            </div>
+            <div title="新闻中心" data-options="iconCls:'icon-add'">
+                <ul class="nav">
+                    <li value="31">
+                        <img class="liimage" src="~/images/news.png" />添加新闻
+                    </li>
+                    <li value="32"><img class="liimage" src="~/images/list.png" />新闻列表</li>
+                </ul>
+            </div>
+            <div title="实验教学" data-options="iconCls:'icon-add'">
+                <ul class="nav">
+                    <li value="41">
+                        <img class="liimage" src="~/images/test.png" />添加实验</li>
+                    <li value="42"><img class="liimage" src="~/images/test_libriary.png" />实验列表</li>
+                </ul>
+            </div>
+            <div title="实验资源" data-options="iconCls:'icon-add'">
+                <ul class="nav">
+                    <li value="141">
+                        <img class="liimage" src="~/images/resource_add.png" />添加资源
+                    </li>
+                    <li value="142"><img class="liimage" src="~/images/resource_list.png" />资源列表</li>
+                </ul>
+            </div>
+            <div title="师资队伍" data-options="iconCls:'icon-add'">
+                <ul class="nav">
+                    <li value="51"><img class="liimage" src="~/images/teacher.png" />添加教师</li>
+                    <li value="52"><img class="liimage" src="~/images/sss.png" />教师列表</li>
+                </ul>
+            </div>
+            <div title="成果展示" data-options="iconCls:'icon-add'">
+                <ul class="nav">
+                    <li value="61"><img class="liimage" src="~/images/works.png" />添加成果</li>
+                    <li value="62"><img class="liimage" src="~/images/list%20(2).png" />成果列表</li>
+                </ul>
+            </div>
+            <div title="文件下载" data-options="iconCls:'icon-add'">
+                <ul class="nav">
+                    <li value="71">
+                        <img class="liimage" src="~/images/upload.png" />添加文件</li>
+                    <li value="72"><img class="liimage" src="~/images/files.png" />文件列表</li>
+                </ul>
+            </div>
+            <div title="常规管理" data-options="iconCls:'icon-add'">
+                <ul class="nav">
+                    <li value="11">
+                        <img class="liimage" src="~/images/admin.png" />管理员管理</li>
+                    <li id="rePwd" value="12">
+                        <img src="~/images/password%20(2).png" />修改密码</li>
+                    <li value="13">
+                        <img class="liimage" src="~/images/temp.png" />系统缓存管理</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div id="operation" data-options="region:'center',title:'管理面板'"></div>
+</body>
+
+</html>

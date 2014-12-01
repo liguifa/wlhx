@@ -1,0 +1,231 @@
+﻿<table id="dg"></table>
+<script type="text/javascript">
+    var PageIndex = 1;
+    var PageSize = 30;
+    var gade = 0;
+    var index = -1;
+    $('#dg').datagrid({
+        fit: true,
+        url:"/User/GetProfessionalList",
+        singleSelect: true,
+        rownumbers: true,
+        striped: true,
+        fitColumns: true,
+        pagination: true,
+        pageSize: PageSize,//每页显示的记录条数，默认为10
+        pageList: [10, 20, 30, 50],//每页显示几条记录
+        beforePageText: '第',//页数文本框前显示的汉字
+        pageNumber: PageIndex,
+        total: 300,
+        afterPageText: '页    共 {pages} 页',
+        displayMsg: '当前显示 {from} - {to} 条记录    共 {total} 条记录',
+        queryParams: {
+            gade: gade,
+        },
+        columns: [[
+            { field: 'value', hidden: true, },
+            { field: 'text', title: '方向名称', width: 10, editor: "validatebox" },
+            { field: 'people_num', title: '已选人数', width: 6, editor: "validatebox" },
+        ]],
+        toolbar: [{
+            id:"add",
+            iconCls: 'icon-add',
+            text: "添加",
+            handler: function ()
+            {
+                $.messager.prompt('提示', '请输入方向名称：', function (r)
+                {
+                    if (r)
+                    {
+                        if (r.length > 25)
+                        {
+                            $.messager.alert("错误", "专业方向不能大于25个汉字！", "error");
+                            return null;
+                        }
+                        $("#dg").datagrid("loading");
+                        $.ajax({
+                            type: "post",
+                            url: "/User/AddProfessional",
+                            data: {
+                                title: r,
+                                
+                            },
+                            success: function (data)
+                            {
+                                if (data.status == "1")
+                                {
+                                    $.messager.alert("提示", data.msg, "info");
+                                    $("#dg").datagrid("reload");
+                                }
+                                else
+                                {
+                                    $.messager.alert("错误", data.msg, "error");
+                                }
+                            }
+                        });
+                        $("#dg").datagrid("loaded");
+                    }
+                });
+
+
+            }
+        }, '-', {
+            id:"edit",
+            iconCls: 'icon-edit',
+            text: "编辑",
+            disabled: true,
+            handler: function ()
+            {
+                var rows = $("#dg").datagrid("getSelections");
+                if (rows.length == 0)
+                {
+                    $.messager.alert("错误", "你未选中任何一行！", "error");
+                    return null;
+                }
+                var value = rows[0].text;
+                $.messager.prompt('提示', '请编辑方向名称：', function (r)
+                {
+                    if(r)
+                    {
+                        if (r.length > 25)
+                        {
+                            $.messager.alert("错误", "专业方向不能大于25个汉字！", "error");
+                            return null;
+                        }
+                        $("#dg").datagrid("loading");
+                        $.ajax({
+                            type: "post",
+                            url: "/User/EditProfessional",
+                            data: {
+                                title: r,
+                                id: rows[0].value
+                            },
+                            success: function (data)
+                            {
+                                if (data.status == "1")
+                                {
+                                    $.messager.alert("提示", data.msg, "info");
+                                    $("#dg").datagrid("reload");
+                                }
+                                else
+                                {
+                                    $.messager.alert("错误", data.msg, "error");
+                                }
+                            }
+                        });
+                        $("#dg").datagrid("loaded");
+                    }
+                })
+            }
+        }, '-', {
+            id:"remove",
+            iconCls: 'icon-remove',
+            text: "删除",
+            disabled: true,
+            handler: function ()
+            {
+                var rows = $("#dg").datagrid("getSelections");
+                if (rows.length == 0)
+                {
+                    $.messager.alert("错误", "你未选中任何一行！", "error");
+                    return null;
+                }
+                index = $("#dg").datagrid("getRowIndex", rows[0]);
+                $.messager.confirm('提示', '是否确定删除？', function (r)
+                {
+                    if (r)
+                    {
+                        $.ajax({
+                            type: "post",
+                            url: "/User/RemoveProfessional",
+                            data: {
+                                id: rows[0].value,
+                            },
+                            success: function (data)
+                            {
+                                if (data.status == "1")
+                                {
+                                    $.messager.alert("提示", data.msg, "info");
+                                    $("#dg").datagrid("deleteRow", index);
+                                }
+                                else
+                                {
+                                    $.messager.alert("错误", data.msg, "error");
+                                }
+                            }
+                        })
+                    }
+                });
+            }
+        }, '-', {
+            id: "search",
+            iconCls: 'icon-see',
+            text: "查看学生名单",
+            handler: function ()
+            {
+                var rows = $("#dg").datagrid("getSelections");
+                if (rows.length == 0)
+                {
+                    $.messager.alert("错误", "你未选中任何一行！", "error");
+                    return null;
+                }
+                $("#cc").append("<div id=\"dd\"></div> ");
+                $('#dd').window({
+                    width: 600,
+                    height: 400,
+                    title:rows[0].text+"学生名单",
+                    href:"/User/GetProfessionStudent/"+rows[0].value,
+                    content:"<div style='windth:180px;margin:auto;margin-top:100px;text-align:center'><img src=\"../../images/loading.gif\"><p>玩命加载中....</p><div>",
+                    modal: true
+                });
+            }
+        }],
+        onSelect: function (rowIndex, rowData)
+        {
+                $("#edit").linkbutton("enable");
+                $("#remove").linkbutton("enable");
+        },
+    });
+    $("#dg").ready(function ()
+    {
+        function LoadPageation()
+        {
+            var p = $("#dg").datagrid('getPager');
+            $(p).pagination
+                ({
+                    pageSize: PageSize,//每页显示的记录条数，默认为10
+                    pageList: [10, 20, 30, 50],//每页显示几条记录
+                    beforePageText: '第',//页数文本框前显示的汉字
+                    pageNumber: PageIndex,
+                    total: 300,
+                    afterPageText: '页    共 {pages} 页',
+                    displayMsg: '显示{from}到{to} 共 {total} 条记录',
+                    onSelectPage: function (pageNumber, pageSize)
+                    {
+                        PageIndex = pageNumber;
+                        PageSize = pageSize;
+                        $('#dg').datagrid({
+                            pageSize: PageSize,//每页显示的记录条数，默认为10
+                            pageNumber: PageIndex,
+                        });
+                        $(p).pagination("loading");
+                        $("#dg").datagrid("loading");
+                        $("#dg").datagrid({
+                            queryParams: {
+                                gade: gade,
+                                pageIndex: pageNumber,
+                                pageSize: pageSize
+                            }
+                        });
+                        $("#dg").datagrid("reload");
+
+                        LoadPageation();
+
+                    },
+                });
+        }
+        LoadPageation();
+    });
+    
+
+</script>

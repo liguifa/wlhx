@@ -1,0 +1,121 @@
+﻿
+<table id="table"></table>
+
+
+<script>
+    $("#table").datagrid({
+        fit: true,
+        striped: true,
+        fitColumns: true,
+        singleSelect: true,
+        url: "/Student/Exjson",
+        pagination: true,
+        pageNumber: 1,
+        pageSize: 30,
+        pageList: [20, 30, 40, 60, 100],
+        columns: [[
+       { field: 'id', title: 'id', hidden: true },
+       { field: 'title', title: '名称', width: 150 },
+       { field: 'num', title: '已选人数', width: 60, },
+        { field: 'max', title: '最多人数', width: 60, },
+       { field: 'btn', title: '预约', width: 20, },
+        ]],
+        onLoadSuccess: function ()
+        {
+            $(".btn").click(function ()
+            {
+                var id = $(this).val();
+                $.ajax({
+                    type: "post",
+                    url: "/Student/CheckGrade",
+                    data: { id: id },
+                    success: function (data)
+                    {
+                        var data = eval("(" + data + ")");
+                        if (data.back == "ok")
+                        {
+                            $("body").append('<div id="win"><table id="timeTable"></table></div>');
+                            $("#win").window({
+                                width: 600,
+                                height: 400,
+                                modal: true
+                            });
+                            var dayOfWeek = [{ "value": "周一", "text": "周一" }, { "value": "周二", "text": "周二" }, { "value": "周三", "text": "周三" }, { "value": "周四", "text": "周四" }, { "value": "周五", "text": "周五" }, { "value": "周六", "text": "周六" }, { "value": "周日", "text": "周日" }];
+                            var period = [{ "value": "1-2节", "text": "1-2节" }, { "value": "3-4节", "text": "3-4节" }, { "value": "5-6节", "text": "5-6节" }, { "value": "7-8节", "text": "7-8节" }, { "value": "9-10节", "text": "9-10节" }, { "value": "11-12节", "text": "11-12节" }];
+                            var dayOfWeek_choose;
+                            var period_choose;
+                            $("#win").ready(function ()
+                            {
+                                $("#timeTable").datagrid({
+                                    fit: true,
+                                    striped: true,
+                                    fitColumns: true,
+                                    singleSelect: true,
+                                    url: "/Student/TimeJson/" + id,
+                                    pagination: true,
+                                    columns: [[
+                                        { field: "id", hidden: true },
+                                        { field: "week", title: '周次', width: 150 },
+                                        { field: "dayOfWeek", title: '时间', editor: { type: 'combobox', options: { data: dayOfWeek, valuefield: 'value', textfield: 'text' } }, width: 150 },
+                                        { field: "time", title: '节次', editor: { type: 'combobox', options: { data: period, valuefield: 'value', textfield: 'text' } }, width: 150 },
+                                        { field: "num", title: '已选人数', width: 150 },
+                                        { field: "max", title: '最大人数', width: 150 },
+                                        { field: "timebtn", title: '选择', width: 150 },
+                                    ]],
+                                    onAfterEdit: function (rowIndex, rowData, changes)
+                                    {
+                                        dayOfWeek_choose = changes.dayOfWeek;
+                                        period_choose = changes.time;
+                                    },
+                                    onLoadSuccess: function ()
+                                    {
+                                        $(".timebtn").click(function ()
+                                        {
+                                            $("#timeTable").datagrid("beginEdit", 0);
+                                            $(this).text("确定");
+                                            $(this).attr("class", "choose");
+                                            $(".choose").click(function ()
+                                            {
+                                                $("#timeTable").datagrid("endEdit", $(this).attr("name"));
+                                                $.ajax({
+                                                    type: "post",
+                                                    url: "/Student/ChooseEx/" + $(this).val(),
+                                                    data: {
+                                                        exid: id,
+                                                        dayOfWeek: dayOfWeek_choose,
+                                                        period: period_choose
+                                                    },
+                                                    success: function (data)
+                                                    {
+                                                        var data = eval("(" + data + ")");
+                                                        if (data.back == "ok")
+                                                        {
+                                                            $.messager.alert("提示", "选择成功")
+                                                        }
+                                                        else
+                                                        {
+                                                            $.messager.alert("提示", data.back);
+                                                        }
+                                                    }
+                                                });
+                                            });
+                                        });
+                                    }
+
+                                });
+
+                            });
+                        }
+                        else
+                        {
+                            $.messager.alert("提示", data.back);
+                        }
+                    }
+                })
+            });
+        }
+    });
+
+
+
+</script>

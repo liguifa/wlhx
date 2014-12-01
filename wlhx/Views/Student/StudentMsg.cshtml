@@ -1,0 +1,15 @@
+﻿
+<table id="pg" style="width:300px"></table>
+<script type="text/javascript">
+    $('#pg').propertygrid({
+        url: '/Student/GetPeopleMsg',
+        showGroup: true,
+        scrollbarSize: 0,
+        fit: true,
+        columns: [[
+            { field: "name", title: "名称", width: 10 },
+            { field: "value", title: "值", width: 70 }
+        ]],
+    });
+    
+</script>

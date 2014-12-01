@@ -1,0 +1,162 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta name="keywords" content="大连工业大学,无机材料实验教学中心,无机材料,实验教学中心,无机材料研究所,辽宁省重点实验室,硅酸盐工程实验室" />
+    <meta name="description" content="大连工业大学无机材料实验室，原为硅酸盐工程实验室，始建于1958年，是我校建校初始就创建的实验室之一。经过50余年的发展，已经逐步形成了以玻璃、陶瓷材料为教学实验，以无机新材料为研究实验的特色人才培养体系，注重实践与创新能力的培养和建设，并取得了辉煌的成绩。" />
+    <title>Index</title>
+    <link href="~/EasyUI/themes/icon.css" rel="stylesheet" />
+    <link href="~/EasyUI/themes/bootstrap/easyui.css" rel="stylesheet" />
+    <script src="~/EasyUI/jquery.min.js"></script>
+    <script src="~/EasyUI/jquery.easyui.min.js"></script>
+    <script src="~/js/management.js"></script>
+    <script src="~/EasyUI/locale/easyui-lang-zh_CN.js"></script>
+    <script src="~/js/validatebox.js"></script>
+    <style>
+        #aa {
+            background-color: #EEEEEE;
+        }
+
+        .opul li {
+            width: 90%;
+            height: 20px;
+            margin-top: 15px;
+            padding-top: 5px;
+            text-align: center;
+            cursor: pointer;
+            -moz-user-select: none; /*火狐*/
+            -webkit-user-select: none; /*webkit浏览器*/
+            -ms-user-select: none; /*IE10*/
+            -khtml-user-select: none; /*早期浏览器*/
+            user-select: none;
+            background-color: #F7F7F7;
+        }
+
+        .opul {
+            margin-left: -30px;
+            list-style: none;
+        }
+
+        .action {
+            color: red;
+            border: 1px solid #000;
+        }
+
+        .liimage {
+            vertical-align: middle;
+        }
+    </style>
+
+</head>
+
+<body class="easyui-layout">
+
+    <div data-options="region:'west',title:'导航菜单',split:true" style="width:200px;">
+        <div id="aa" class="easyui-accordion">
+
+            <div title="专业方向" data-options="iconCls:'icon-add'">
+                <ul class="opul ">
+                    <li value="81" class="active">
+                        <img class="liimage" src="~/EasyUI/themes/gray/images/dir.png" />
+
+                        选择方向
+                    </li>
+                </ul>
+            </div>
+            <div title="实验预约" data-options="iconCls:'icon-add'" style="padding:10px;">
+                <ul class="opul">
+
+                    <li value="91">
+
+
+                        <img class="liimage" src="~/EasyUI/themes/gray/images/exper.png" />我的实验
+                    </li>
+                    <li value="92">
+                        <img class="liimage" src="~/EasyUI/themes/gray/images/prefor.png" /> 预约实验
+                    </li>
+
+                </ul>
+            </div><div title="毕业课题" data-options="iconCls:'icon-add'" style="padding:10px;">
+                <ul class="opul">
+                    <li value="101"> <img class="liimage" src="~/EasyUI/themes/gray/images/class.png" />我的课题</li>
+                    <li value="102">
+                        <img class="liimage" src="~/EasyUI/themes/gray/images/choose.png" /> 选择课题
+                    </li>
+
+                </ul>
+            </div>
+            <div title="创新创业" data-options="iconCls:'icon-add'" style="padding:10px;">
+                <ul class="opul">
+                    <li value="111"> <img class="liimage" src="~/EasyUI/themes/gray/images/me.png" />我的课题</li>
+                    <li value="112"><img class="liimage" src="~/EasyUI/themes/gray/images/choose.png" />选择课题</li>
+
+                </ul>
+            </div>
+            <div title="个人信息" data-options="iconCls:'icon-add',selected:true" style="overflow:auto;padding:10px;">
+                <ul class="opul">
+                    <li value="121">
+                        <img class="liimage" src="~/EasyUI/themes/gray/images/personal%20(2).png" /> 个人信息
+                    </li>
+                    <li value="122">
+                        <img class="liimage" src="~/EasyUI/themes/gray/images/password.png" /> 修改密码
+                    </li>
+
+                </ul>
+            </div>
+
+        </div>
+    </div>
+    <div id="operation" data-options="region:'center',title:'欢迎'" style="background:#eee;">
+        <blockquote>
+            <h3 style="text-align:center;text-indent:2em;">
+                <div style="text-align:left;">
+                    <strong><span style="font-size:14px;">&nbsp; &nbsp;&nbsp;</span></strong><strong><span style="font-size:14px;">&nbsp; &nbsp; @ViewBag.student.student_name 您好！</span></strong>
+                </div>
+            </h3>
+        </blockquote>
+        <h3 style="text-align:center;text-indent:2em;">
+            <strong>
+                <span style="font-size:14px;">
+                    <hr />
+                </span>
+            </strong>
+        </h3>
+        <blockquote style="text-indent:2em;">
+            <p>
+                <strong>
+                    <span style="font-size:14px;">
+                        <br />
+                    </span>
+                </strong>
+            </p>
+            <p>
+                <span style="font-size:14px;line-height:2;">&nbsp; &nbsp; 1.首次登陆后建议修改密码。</span>
+            </p>
+            <p>
+                <span style="font-size:14px;"><span style="line-height:2;">&nbsp; &nbsp; 2.专业方向在二年级时开始选择，选择后如要更改请联系管理员。</span></span>
+            </p>
+            <p>
+                <span style="font-size:14px;"><span style="line-height:2;">&nbsp; &nbsp; 3.实验、课题等选择后不可以更改，请仔细核对后再行选择。</span></span>
+            </p>
+            <p>
+                <span style="font-size:14px;"><span style="line-height:2;">&nbsp; &nbsp; 4.选择后的实验可在"我的实验"中查看。</span></span>
+            </p>
+            <p>
+                <span style="font-size:14px;"><span style="line-height:2;">&nbsp; &nbsp; 5.个人信息如有问题，请联系管理员</span></span>
+            </p>
+        </blockquote>
+
+    </div>
+</body>
+</html>
+<script>
+    $("#aa").accordion({
+        fit: true,
+
+    })
+</script>
