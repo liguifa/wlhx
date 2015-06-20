@@ -9,6 +9,7 @@
     var PageIndex = 1;
     var PageSize = 30;
     var gade = 0;
+    var s_class = 100;
     var time;
     var isAdd = false;
     var isEdit = false;
@@ -31,6 +32,7 @@
         displayMsg: '当前显示 {from} - {to} 条记录    共 {total} 条记录',
         queryParams: {
             gade: gade,
+            s_class: s_class,
             professional: 0
         },
         columns: [[
@@ -43,7 +45,7 @@
             { field: 'proDir', title: '专业方向', width: 20, editor: { type: 'combobox', options: { data: proDir, valuefield: 'value', textfield: 'text' } } },
         ]],
         toolbar: [{
-            id:"add",
+            id: "add",
             iconCls: 'icon-add',
             text: "添加",
             handler: function ()
@@ -53,12 +55,14 @@
                     index: 0,	// 索引从0开始
                     row: {}
                 });
-                $("#dg").datagrid("beginEdit", 0);
+                
+                $("#dg").datagrid("beginEdit",1);
+                alert("OK");
                 index = 0;
                 isAdd = true;
             }
         }, '-', {
-            id:"edit",
+            id: "edit",
             iconCls: 'icon-edit',
             text: "编辑",
             disabled: true,
@@ -75,7 +79,7 @@
                 isEdit = true;
             }
         }, '-', {
-            id:"remove",
+            id: "remove",
             iconCls: 'icon-remove',
             text: "删除",
             disabled: true,
@@ -115,7 +119,7 @@
                 });
             }
         }, '-', {
-            id:"save",
+            id: "save",
             iconCls: 'icon-save',
             text: "保存",
             disabled: true,
@@ -124,7 +128,7 @@
                 $("#dg").datagrid("endEdit", index);
             }
         }, '-', {
-            id:"reset",
+            id: "reset",
             iconCls: 'icon-redo',
             text: "重置密码",
             disabled: true,
@@ -163,7 +167,7 @@
                 });
             }
         }, '-', {
-            id:"input",
+            id: "input",
             iconCls: 'icon-input',
             text: "导入",
             handler: function ()
@@ -293,7 +297,7 @@
                 $("#input").linkbutton("enable");
             }
         },
-        onBeforeEdit:function()
+        onBeforeEdit: function ()
         {
             $("#add").linkbutton("disable");
             $("#edit").linkbutton("disable");
@@ -426,6 +430,15 @@
                     $.messager.alert("错误", "数据不合法！", "error");
                 }
             }
+        },
+        onLoadSuccess: function ()
+        {
+            $("#select").remove();
+            $("#select_class").remove();
+            AddSelect();
+            $("#select").val(gade);
+            $("#select_class").val(s_class);
+
         }
     });
     $("#dg").ready(function ()
@@ -467,25 +480,24 @@
                 });
         }
         LoadPageation();
-        AddSelect();
+
     });
+
     function AddSelect()
     {
-        $(".pagination-info:last").before('<select id="select" style="float:left;margin-left:10px;margin-top:6px;" class="companyclass" name="cars"> <option value="0" class="all"  selected="selected">全部学生</option><option class="notstart" value="1">一年级</option><option class="started" value="2">二年级</option><option class="finished" value="3">三年级</option><option class="finished" value="4">四年级</option></select>');
-        $("#select").val(gade);
-        $("#select").change(function ()
-        {
+        $(".pagination-info:last").before('<select onchange="selectGrade(this)" id="select" style="float:left;margin-left:10px;margin-top:6px;" class="companyclass" name="cars"> <option value="0" class="all" >全部学生</option><option class="notstart" value="1">一年级</option><option class="started" value="2">二年级</option><option class="finished" value="3">三年级</option><option class="finished" value="4">四年级</option></select>');
 
-            gade = $(this).val();
-            $("#dg").datagrid({
-                queryParams: {
-                    gade: gade,
-                }
-            })
-            $("#dg").datagrid("reload");
-            AddSelect();
+        @{
+            string str = "<select onchange='selectClass(this)' id='select_class' style='float:left;margin-left:10px;margin-top:6px;' class='companyclass' name='cars'><option value='100'>全部学生</option>";
+            foreach (string s_class in ViewBag.s_class)
+            {
+                str+="<option value="+s_class+" class='all' >"+s_class+"</option>";
+            }
+            str += "</select>";
+        }
+        var str = "@str".replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&#39;/g, "'");
+        $(".pagination-info:last").before(str);
 
-        });
     }
     $("#file").change(function ()
     {
@@ -527,5 +539,26 @@
             $(window.frames["iframe"].document).find("body").text("");
         }
     }
-
+    function selectGrade(obj)
+    {
+        gade = $(obj).val();
+        $("#dg").datagrid({
+            queryParams: {
+                s_class: s_class,
+                gade: gade,
+            }
+        })
+        $("#dg").datagrid("reload");
+    }
+    function selectClass(obj)
+    {
+        s_class = $(obj).val();
+        $("#dg").datagrid({
+            queryParams: {
+                s_class: s_class,
+                gade: gade,
+            }
+        })
+        $("#dg").datagrid("reload");
+    }
 </script>

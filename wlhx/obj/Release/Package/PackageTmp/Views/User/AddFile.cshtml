@@ -3,6 +3,8 @@
         <form method="post" action="/User/AddFileIn" target="iframe" enctype="multipart/form-data">
             <span>文件标题:</span><input id="title" name="title" type="text" /><br />
             <span>选择文件:</span><input id="file" name="file" type="file" /><br />
+            <span>添加为教学课件:</span><input id="iskj" name="iskj" type="checkbox" /><br />
+            <span>课件类型:</span><select id="kjclass" name="kjclass"><option>视频</option><option>PPT</option></select><br />
             <input id="submit" type="submit" style="display:none" />
         </form>
         <iframe name="iframe" id="iframe" style="display:none"></iframe>

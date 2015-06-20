@@ -10,7 +10,7 @@ function ckcpt() { //自定义加载图片或flash，该类可以自己随意添
 }
 function ckstyle() { //定义总的风格
     var ck = new Object();
-    ck.cpath = '../../ckplayer/assets/'; //风格总路径
+    ck.cpath = '/ckplayer/assets/'; //风格总路径
     ck.mylogo = 'logo.swf';
     ck.logo = 'cklogo.png,2,100,10';
     ck.buffer = 'buffer.swf';

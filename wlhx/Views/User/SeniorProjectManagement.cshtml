@@ -8,7 +8,7 @@
     var isEdit = false;
     $('#dg').datagrid({
         fit: true,
-        url:"/User/GetSenioProjectList",
+        url: "/User/GetSenioProjectList",
         singleSelect: true,
         rownumbers: true,
         striped: true,
@@ -26,13 +26,17 @@
         },
         columns: [[
             { field: 'id', hidden: true, },
-            { field: 'title', title: '课题名称', width: 40, editor: "validatebox" },
-            { field: 'grade', title: '可选年级', width: 30, editor: "validatebox" },
-            { field: 'totalNum', title: '最大人数', width: 15, editor: "validatebox" },
-            { field: 'chooseNum', title: '已选人数', width: 15 },
+            { field: 'title', title: '课题名称', width: 70, editor: "validatebox" },
+            { field: 'type', title: '类型', width: 20, editor: "validatebox" },
+            { field: 'src', title: '来源', width: 20, editor: "validatebox" },
+            { field: 'teacher', title: '教师', width: 20, editor: "validatebox" },
+            { field: 'grade', title: '可选年级', width: 10, editor: "validatebox" },
+            { field: 'totalNum', title: '最大人数', width: 10, editor: "validatebox" },
+            { field: 'chooseNum', title: '已选人数', width: 10 },
+            { field: 'stuName', title: '已选学生', width: 10 },
         ]],
         toolbar: [{
-            id:"add",
+            id: "add",
             iconCls: 'icon-add',
             text: "添加",
             handler: function ()
@@ -40,7 +44,7 @@
                 $('#dg').datagrid('insertRow', {
                     index: 0,	// 索引从0开始
                     row: {
-                       
+
                     }
                 });
                 $("#dg").datagrid("beginEdit", 0);
@@ -48,7 +52,7 @@
                 isAdd = true;
             }
         }, '-', {
-            id:"edit",
+            id: "edit",
             iconCls: 'icon-edit',
             text: "编辑",
             disabled: true,
@@ -60,12 +64,12 @@
                     $.messager.alert("错误", "你未选中任何一行！", "error");
                     return null;
                 }
-                index=$("#dg").datagrid("getRowIndex",rows[0]);
+                index = $("#dg").datagrid("getRowIndex", rows[0]);
                 $("#dg").datagrid("beginEdit", index);
                 isEdit = true;
             }
         }, '-', {
-            id:"remove",
+            id: "remove",
             iconCls: 'icon-remove',
             text: "删除",
             disabled: true,
@@ -129,11 +133,44 @@
                 $('#dd').window({
                     width: 600,
                     height: 400,
-                    title:rows[0].title+"学生名单",
-                    href:"/User/GetSenionrProjectStudent/"+rows[0].id,
-                    content:"<div style='windth:180px;margin:auto;margin-top:100px;text-align:center'><img src=\"../../images/loading.gif\"><p>玩命加载中....</p><div>",
+                    title: rows[0].title + "学生名单",
+                    href: "/User/GetSenionrProjectStudent/" + rows[0].id,
+                    content: "<div style='windth:180px;margin:auto;margin-top:100px;text-align:center'><img src=\"../../images/loading.gif\"><p>玩命加载中....</p><div>",
                     modal: true
                 });
+            }
+        }, '-', {
+            id: "search_2",
+            iconCls: 'icon-out',
+            text: "导出学生名单",
+            handler: function ()
+            {
+                $.messager.progress({
+                    title: "正在导出....",
+                    msg: "这可能需要一些时间！",
+                    text: "请稍等"
+                });
+
+                $.ajax({
+                    type: "post",
+                    url: "/User/OutStudentFromProject",
+                    data: {
+                        id: '0'
+                    },
+                    success: function (data)
+                    {
+                        $.messager.progress('close');
+                        if (data.status == "1")
+                        {
+                            $.messager.alert("提示", "导出成功！正在为你下载.....", "info");
+                            window.location.href = "/User/GetExcel/" + data.msg;
+                        }
+                        else
+                        {
+                            $.messager.alert("错误", data.msg, "error");
+                        }
+                    }
+                })
             }
         }],
         onSelect: function (rowIndex, rowData)
@@ -158,9 +195,9 @@
                 $("#remove").linkbutton("enable");
                 $("#save").linkbutton("disable");
             }
-                
+
         },
-        onBeforeEdit:function()
+        onBeforeEdit: function ()
         {
             $("#add").linkbutton("disable");
             $("#edit").linkbutton("disable");
@@ -176,7 +213,7 @@
                     isAdd = false;
                     return null;
                 }
-                if (changes.title.length <= 25)
+                if (changes.title.length <= 200)
                 {
                     var num = parseInt(changes.totalNum);
                     if (num >= 1)
@@ -190,8 +227,11 @@
                                 $("#dg").datagrid("beginEdit", index);
                                 return null;
                             }
-                            
+
                         }
+                        var src = changes.src + "" == "undefined" ? rowData.src : changes.src;
+                        var type = changes.type + "" == "undefined" ? rowData.type : changes.type;
+                        var teacher = changes.teacher + "" == "undefined" ? rowData.teacher : changes.teacher;
                         $.ajax({
                             type: "post",
                             url: "/User/AddProjectFromSenior",
@@ -200,6 +240,9 @@
                                 title: changes.title,
                                 grade: changes.grade,
                                 totalNum: changes.totalNum,
+                                type: type,
+                                src: src,
+                                teacher: teacher
                             },
                             success: function (data)
                             {
@@ -229,13 +272,13 @@
                 }
                 else
                 {
-                    $.messager.alert("错误", "课题名称应小于25个汉字！", "error");
-                    $("#dg").datagrid("beginEdit",index);
+                    $.messager.alert("错误", "课题名称应小于200个汉字！", "error");
+                    $("#dg").datagrid("beginEdit", index);
                 }
             }
             else if (isEdit)
             {
-                if (changes.title + "" == "undefined" && changes.grade + "" == "undefined" && changes.totalNum + "" == "undefined")
+                if (changes.title + "" == "undefined" && changes.grade + "" == "undefined" && changes.totalNum + "" == "undefined" && changes.src + "" == "undefined" && changes.type + "" == "undefined" && changes.teacher + "" == "undefined")
                 {
                     isEdit = false;
                     return null;
@@ -243,7 +286,10 @@
                 var title = changes.title + "" == "undefined" ? rowData.title : changes.title;
                 var grades = changes.grade + "" == "undefined" ? rowData.grade : changes.grade;
                 var totalNum = changes.totalNum + "" == "undefined" ? rowData.totalNum : changes.totalNum;
-                if (title.length <= 25)
+                var src = changes.src + "" == "undefined" ? rowData.src : changes.src;
+                var type = changes.type + "" == "undefined" ? rowData.type : changes.type;
+                var teacher = changes.teacher + "" == "undefined" ? rowData.teacher : changes.teacher;
+                if (title.length <= 200)
                 {
                     var num = parseInt(totalNum);
                     if (num >= 1)
@@ -267,6 +313,9 @@
                                 title: title,
                                 grade: grades,
                                 totalNum: totalNum,
+                                type: type,
+                                src: src,
+                                teacher: teacher
                             },
                             success: function (data)
                             {
@@ -296,7 +345,7 @@
                 }
                 else
                 {
-                    $.messager.alert("错误", "课题名称应小于25个汉字！", "error");
+                    $.messager.alert("错误", "课题名称应小于200个汉字！", "error");
                     $("#dg").datagrid("beginEdit", index);
                 }
             }

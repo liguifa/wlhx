@@ -20,9 +20,6 @@ namespace wlhx.Controllers
             ViewBag.showNotice = d.GetOneShow((int)DynamicTypes.Toast);
             ViewBag.showNews = d.GetOneShow((int)DynamicTypes.News);
             ViewBag.showCG = d.GetOneShow((int)DynamicTypes.Achievement,false);
-            StudentImgOperation so=new StudentImgOperation();
-            ViewBag.img =so.GetImg();
-            ViewBag.width = so.GetImageWidth();
             return View();
         }
         #region  public ActionResult Dynamic(string id)

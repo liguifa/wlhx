@@ -40,6 +40,9 @@
     <EntitySetMapping Name="Experiments">
       <EntityTypeMapping TypeName="WlhxModel.Experiment">
         <MappingFragment StoreEntitySet="Experiments">
+          <ScalarProperty Name="experiment_teacher" ColumnName="experiment_teacher" />
+          <ScalarProperty Name="experiment_type" ColumnName="experiment_type" />
+          <ScalarProperty Name="experiment_src" ColumnName="experiment_src" />
           <ScalarProperty Name="experiment_id" ColumnName="experiment_id" />
           <ScalarProperty Name="experiment_title" ColumnName="experiment_title" />
           <ScalarProperty Name="experiment_class" ColumnName="experiment_class" />
@@ -71,15 +74,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="StudentImgs">
-      <EntityTypeMapping TypeName="WlhxModel.StudentImg">
-        <MappingFragment StoreEntitySet="StudentImgs">
-          <ScalarProperty Name="studentImg_id" ColumnName="studentImg_id" />
-          <ScalarProperty Name="studentImg_url" ColumnName="studentImg_url" />
-          <ScalarProperty Name="studentImg_isDel" ColumnName="studentImg_isDel" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="Students">
       <EntityTypeMapping TypeName="WlhxModel.Student">
         <MappingFragment StoreEntitySet="Students">
@@ -95,5 +89,40 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="sysdiagrams">
+      <EntityTypeMapping TypeName="WlhxModel.sysdiagram">
+        <MappingFragment StoreEntitySet="sysdiagrams">
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+          <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+          <ScalarProperty Name="version" ColumnName="version" />
+          <ScalarProperty Name="definition" ColumnName="definition" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="WlhxModel.Store.sp_alterdiagram" />
+    <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="WlhxModel.Store.sp_creatediagram" />
+    <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="WlhxModel.Store.sp_dropdiagram" />
+    <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="WlhxModel.Store.sp_helpdiagramdefinition">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="WlhxModel.sp_helpdiagramdefinition_Result">
+          <ScalarProperty Name="version" ColumnName="version" />
+          <ScalarProperty Name="definition" ColumnName="definition" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="WlhxModel.Store.sp_helpdiagrams">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="WlhxModel.sp_helpdiagrams_Result">
+          <ScalarProperty Name="Database" ColumnName="Database" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Owner" ColumnName="Owner" />
+          <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="WlhxModel.Store.sp_renamediagram" />
+    <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="WlhxModel.Store.sp_upgraddiagrams" />
   </EntityContainerMapping>
 </Mapping>

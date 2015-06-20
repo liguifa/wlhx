@@ -27,6 +27,9 @@ namespace wlhx.Models
         public bool experiment_isDel { get; set; }
         public string experiment_allowGrades { get; set; }
         public string experiment_week { get; set; }
+        public string experiment_src { get; set; }
+        public string experiment_type { get; set; }
+        public string experiment_teacher { get; set; }
     
         public virtual ICollection<Choos> Chooses { get; set; }
         public virtual ICollection<ExperimentTime> ExperimentTimes { get; set; }

@@ -51,7 +51,11 @@
             vertical-align: middle;
         }
     </style>
-
+	<script type="text/javascript">
+        $(".panel-title").ready(function(){
+            $(".panel-title:last").append("<a href=\"/\" style='float:right'>返回首页</a>");
+        })
+    </script>
 </head>
 
 <body class="easyui-layout">

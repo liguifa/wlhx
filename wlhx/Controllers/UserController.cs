@@ -85,11 +85,11 @@ namespace wlhx.Controllers
             return PartialView();
         }
 
-        public JsonResult AddFileIn(string title, HttpPostedFileBase file,string iskj=null,string kjclass=null)
+        public JsonResult AddFileIn(string title, HttpPostedFileBase file, string iskj = null, string kjclass = null)
         {
             string path = Server.MapPath("~/file");
             path = new SaveFile().SaveFileTo(path, file);
-            return path == "标题或文件不能为空....." ? Json(new JsonStatus() { status = "0", msg = "标题或文件不能为空....." }) : Json(new DynamicOperation().AddFileIn(title, path,iskj,kjclass));
+            return path == "标题或文件不能为空....." ? Json(new JsonStatus() { status = "0", msg = "标题或文件不能为空....." }) : Json(new DynamicOperation().AddFileIn(title, path, iskj, kjclass));
         }
         [ValidateInput(false)]
         public string AddDynamic()
@@ -175,12 +175,13 @@ namespace wlhx.Controllers
         public ActionResult StudentManagement()
         {
             ViewBag.proDir = new ProfessionalOperation().GetProfessionalList();
+            ViewBag.s_class = new StudentOperation().GetStudentClass();
             return PartialView();
         }
 
-        public string GetStudentList(int gade, int page, int rows, int professional)
+        public string GetStudentList(int gade, int page, int rows, int professional = 0, string s_class = "100")
         {
-            return new StudentOperation().GetStudentList(page, rows, gade, professional);
+            return new StudentOperation().GetStudentList(page, rows, gade, professional, s_class);
         }
 
         public ActionResult ExperimentMangement()
@@ -449,14 +450,14 @@ namespace wlhx.Controllers
             string json = new StudentOperation().DelExtimeChooseStu(id, exid);
             return "{\"back\":\"" + json + "\"}";
         }
-        public JsonResult AddProjectFromSenior(string id, string title, string grade, string totalNum)
+        public JsonResult AddProjectFromSenior(string id, string title, string grade, string totalNum, string type, string src, string teacher)
         {
-            return Json(new ExperimentOperation().AddProjectFromSenior(id, title, grade, totalNum));
+            return Json(new ExperimentOperation().AddProjectFromSenior(id, title, grade, totalNum, type, src, teacher));
         }
 
-        public JsonResult EditProjectFromSenior(string id, string title, string grade, string totalNum)
+        public JsonResult EditProjectFromSenior(string id, string title, string grade, string totalNum, string type, string src, string teacher)
         {
-            return Json(new ExperimentOperation().EditProjectFromSenior(id, title, grade, totalNum));
+            return Json(new ExperimentOperation().EditProjectFromSenior(id, title, grade, totalNum, type, src, teacher));
         }
 
         public JsonResult RemoveProjectFromSenior(string id)

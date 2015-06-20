@@ -39,7 +39,7 @@ namespace wlhx.BLL
                 {
                     if (students[0].student_grade >= 2)
                     {
-                        if (students[0].student_proDirectionId==null)
+                        if (students[0].student_proDirectionId == null)
                         {
                             try
                             {
@@ -218,13 +218,14 @@ namespace wlhx.BLL
 
         }
 
-        public string GetStudentList(int pageIndex, int pageSize, int grade, int professional)
+        public string GetStudentList(int pageIndex, int pageSize, int grade, int professional, string s_class)
         {
             StringBuilder json = new StringBuilder();
             List<int> gradeList = grade == 0 ? new List<int> { 1, 2, 3, 4 } : new List<int> { grade };
             List<long> professionalList = professional == 0 ? new ProfessionalOperation().Search(d => d.professional_isDel == false).Select(d => d.professionalDir_id).ToList() : new List<long>() { professional };
             json.Append("{\"total\":\"" + base.SearchCount(d => d.student_isDel == false && gradeList.Contains(d.student_grade)) + "\",\"rows\":[");
-            List<Student> students = base.Search(d => d.student_isDel == false && gradeList.Contains(d.student_grade) && (professionalList.Contains((long)d.student_proDirectionId) || (d.student_proDirectionId == null && professional == 0)), d => d.student_id, pageIndex, pageSize);
+            List<Student> students = s_class == "100" ? base.Search(d => d.student_isDel == false && gradeList.Contains(d.student_grade) && (professionalList.Contains((long)d.student_proDirectionId) || (d.student_proDirectionId == null && professional == 0)), d => d.student_id, pageIndex, pageSize) : base.Search(d => d.student_isDel == false && gradeList.Contains(d.student_grade) && (professionalList.Contains((long)d.student_proDirectionId) || (d.student_proDirectionId == null && professional == 0)) && d.student_class == s_class, d => d.student_id, pageIndex, pageSize);
+            students = students.OrderBy(d => d.student_class).ToList();
             foreach (Student s in students)
             {
                 string proDir = s.student_proDirectionId == null ? "" : s.Professional.professional_name;
@@ -874,6 +875,11 @@ namespace wlhx.BLL
             }
             return "ok";
 
+        }
+
+        public List<string> GetStudentClass()
+        {
+            return base.Search(d => d.student_isDel == false).Select(d => d.student_class).Distinct().ToList();
         }
 
     }

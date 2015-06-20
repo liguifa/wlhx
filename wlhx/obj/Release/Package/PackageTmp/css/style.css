@@ -290,7 +290,7 @@ body {
 /* start main_btm */
 .main_btm{
 	background: #FFFFFF;
-	border-top: 1px solid rgb(233, 233, 233);
+	/*border-top: 1px solid rgb(233, 233, 233);*/
 }
 .content_right h4{
 	color: #353535;
@@ -308,6 +308,7 @@ body {
 /* start footer */
 .footer_bg{
 	background: #f6f6f6;
+	clear: both;
 }
 .footer{
 	padding: 4%;

@@ -19,7 +19,7 @@
     <![endif]-->
     <link href="~/css/style.css" rel="stylesheet" type="text/css" media="all" />
     <!-- start plugins -->
-    <script type="text/javascript" src="~/js/jquery.min.js"></script>                                                           
+    <script type="text/javascript" src="~/js/jquery.min.js"></script>
     <script type="text/javascript" src="~/js/bootstrap.js"></script>
     <script type="text/javascript" src="~/js/bootstrap.min.js"></script>
     <!-- start slider -->
@@ -52,7 +52,7 @@
         }
     </script>
     <!-- Owl Carousel Assets -->
-    <link href="~/css/owl.carousel.css" rel="stylesheet">
+    <link href="~/css/owl.carousel.css" rel="stylesheet" />
     <script src="~/js/owl.carousel.js"></script>
     <script>
         $(document).ready(function ()
@@ -106,6 +106,8 @@
     <style>
         body {
             overflow-x: hidden;
+            background: url(/images/bg-tile.png) no-repeat 100% 100%;
+            background-size: 100% 100%;
         }
 
         #syjx_ul > li > a:hover {
@@ -126,10 +128,11 @@
         }
 
         .main_left {
-            width: 20%;
+            width: 26.5%;
             float: left;
             margin-top: 20px;
             margin-right: 10px;
+            margin-left: 6px;
         }
 
             .main_left h3 {
@@ -152,7 +155,7 @@
             border: solid 1px #cdcdcd;
             line-height: 22px;
             padding: 5px;
-            margin-bottom:10px;
+            margin-bottom: 10px;
         }
 
         .input_button {
@@ -197,10 +200,15 @@
 
             .main_left ul li a {
                 text-decoration: none;
-                color: #545454;
+                color: #1D1D1D;
                 background: #fff;
                 font: 12px/1.5 arial,sans-serif;
             }
+
+                .main_left ul li a:hover {
+                    text-decoration: underline;
+                    color: red;
+                }
 
             .main_left ul li span {
                 float: right;
@@ -211,7 +219,7 @@
         }
 
         .mian_long {
-            width: 50%;
+            width: 43%;
             float: left;
         }
 
@@ -219,143 +227,119 @@
             width: 26.6%;
             margin-right: 0px;
             float: left;
+            height: 260px;
         }
-        .content_left {
-            overflow-x:hidden;
+
+        #fl .con_title {
+            background-position: 301px 0;
         }
-        .content_left table {
-            border-collapse:inherit;
-            border-spacing:inherit;
-            height:400px;
-            width:px;
+
+        .con_title {
+            float: left;
+            background-image: url(/images/sets.gif);
+            margin: 16px 0 3px 19px;
         }
-        .content_left tr {
-            height:400px;
+
+        .con_line {
+            clear: both;
+            background-image: url(/images/main_bg.gif);
+            height: 6px;
         }
-        .content_left table tr td {
-            height:400px;
-            width:586px;
+
+        #fl_links {
+            background-repeat: no-repeat;
+            margin: 20px 0 10px 20px;
         }
-        .content_left table tr td img {
-            width:586px;
-            height:100%;
+
+        .clear {
+            clear: both;
+            height: 1px;
+            overflow: hidden;
+            font-size: 1px;
         }
     </style>
     <script type="text/javascript">
-    $(document).ready(function ()
-    {
-        var w=@ViewBag.width*2;
-        $(".content_left").find("table").css("width",w+"px");
-        $("#yzm-img").click(function ()
+        $(document).ready(function ()
         {
-            $("#yzm-img").attr("src", "/User/VerCode/" + parseInt(Math.random() * 1000))
-        });
-        $("#dl_admin").click(function ()
-        {
-            if ($("#user").val() == "" || $("#passwd").val() == "" || $("#yzm").val() == "")
+            $("#yzm-img").click(function ()
             {
-                $("#error").html("不允许存在空值.....");
-                return null;
-            }
-            $("#error").html("&nbsp;");
-            $("#dl_admin").text("登录中...");
-            $("#dl_admin").attr("disabled", "disabled");
-            $.ajax({
-                type: "post",
-                url: "/User/LoginIn",
-                data: {
-                    user: $("#user").val(),
-                    pwd: $("#passwd").val(),
-                    yzm: $("#yzm").val()
-                },
-                success: function (data)
-                {
-                    if (data.status == "1")
-                    {
-                        window.location.href = "/User/Index";
-                    }
-                    else
-                    {
-                        $("#error").append(data.msg);
-                        $("#dl_admin").text("管理员登录");
-                        $("#dl_admin").removeAttr("disabled");
-                    }
-                }
-            })
-        })
-        $("#dl_stu").click(function ()
-        {
-            if ($("#user").val() == "" || $("#passwd").val() == "" || $("#yzm").val() == "")
+                $("#yzm-img").attr("src", "/User/VerCode/" + parseInt(Math.random() * 1000))
+            });
+            $("#dl_admin").click(function ()
             {
-                $("#error").html("不允许存在空值.....");
-                return null;
-            }
-            $("#error").html("&nbsp;");
-            $("#dl_stu").text("登录中...");
-            $("#dl_stu").attr("disabled", "disabled");
-            $.ajax({
-                type: "post",
-                url: "/Student/Login",
-                data: {
-                    Username: $("#user").val(),
-                    Passwd: $("#passwd").val(),
-                    yzm: $("#yzm").val()
-                },
-                success: function (data)
+                if ($("#user").val() == "" || $("#passwd").val() == "" || $("#yzm").val() == "")
                 {
-                    data = JSON.parse(data);
-                    if (data.back == "ok")
-                    {
-                        window.location.href = "/Student/Index";
-                    }
-                    else
-                    {
-                        $("#error").append(data.back);
-                        $("#dl_stu").text("学生登录");
-                        $("#dl_stu").removeAttr("disabled");
-                    }
+                    $("#error").html("不允许存在空值.....");
+                    return null;
                 }
+                $("#error").html("&nbsp;");
+                $("#dl_admin").text("登录中...");
+                $("#dl_admin").attr("disabled", "disabled");
+                $.ajax({
+                    type: "post",
+                    url: "/User/LoginIn",
+                    data: {
+                        user: $("#user").val(),
+                        pwd: $("#passwd").val(),
+                        yzm: $("#yzm").val()
+                    },
+                    success: function (data)
+                    {
+                        if (data.status == "1")
+                        {
+                            window.location.href = "/User/Index";
+                        }
+                        else
+                        {
+                            $("#error").append(data.msg);
+                            $("#dl_admin").text("管理员登录");
+                            $("#dl_admin").removeAttr("disabled");
+                        }
+                    }
+                })
+            })
+            $("#dl_stu").click(function ()
+            {
+                if ($("#user").val() == "" || $("#passwd").val() == "" || $("#yzm").val() == "")
+                {
+                    $("#error").html("不允许存在空值.....");
+                    return null;
+                }
+                $("#error").html("&nbsp;");
+                $("#dl_stu").text("登录中...");
+                $("#dl_stu").attr("disabled", "disabled");
+                $.ajax({
+                    type: "post",
+                    url: "/Student/Login",
+                    data: {
+                        Username: $("#user").val(),
+                        Passwd: $("#passwd").val(),
+                        yzm: $("#yzm").val()
+                    },
+                    success: function (data)
+                    {
+                        data = JSON.parse(data);
+                        if (data.back == "ok")
+                        {
+                            window.location.href = "/Student/Index";
+                        }
+                        else
+                        {
+                            $("#error").append(data.back);
+                            $("#dl_stu").text("学生登录");
+                            $("#dl_stu").removeAttr("disabled");
+                        }
+                    }
+                })
             })
         });
-        $(".content_left").ready(function ()
-        {
-            setTime();
-        });
-    });
-    var time;
-    function setTime()
-    {
-        time = setInterval(studentImg, 10);
-    }
 
-    function clearTime()
-    {
-        clearInterval(time);
-        setTimeout(setTime, 5000);
-    }
-    var i = 0;
-    function studentImg()
-    {
-        var scrollLeft = $(".content_left").scrollLeft();
-        scrollLeft += 1;
-        $(".content_left").scrollLeft(scrollLeft);
-        i++;
-        if (i == 592)
-        {
-            clearTime();
-            i = 0;
-        }
-        if (scrollLeft ==  parseInt("@ViewBag.width"))
-        {
-            $(".content_left").scrollLeft(0);
-        }
-    }
     </script>
 
     <!-- //Owl Carousel Assets -->
-    <!----font-Awesome----->
-    <link rel="stylesheet" href="~/css/font-awesome.min.css">
-    <!----font-Awesome----->
+    <!--font-Awesome-->
+    <link rel="stylesheet" href="~/css/font-awesome.min.css" />
+    <!--font-Awesome-->
 </head>
 <body>
     <div class="header_bg" style="background: url('/images/slider_bg.jpg') no-repeat left;background-size: 100%;">
@@ -387,27 +371,37 @@
         <!-- start main -->
         <div class="main_left">
             <h3>用户登录</h3>
-            <label>账&nbsp;&nbsp;号：</label><input type="text" id="user" class="input_text" />
-            <label>密&nbsp;&nbsp;码：</label><input type="password" id="passwd" class="input_text" />
-            <label>验证码：</label><input type="text" id="yzm" class="input_text yzm" /><img id="yzm-img" src="/User/VerCode" style="height:25px;float:right;margin-right:30px" />
+            <label>账&nbsp;&nbsp;号：</label><input type="text" id="user" class="input_text" /><br />
+            <label>密&nbsp;&nbsp;码：</label><input type="password" id="passwd" class="input_text" /><br />
+            <label>&nbsp;验证码：</label><input type="text" id="yzm" class="input_text yzm" /><img id="yzm-img" src="/User/VerCode" style="height:25px;float:right;margin-right:80px" />
             <p id="error" style="color:red;margin-left:40px">&nbsp;</p>
             <button type="button" id="dl_stu" class="input_button">学生登陆</button>
             <button type="button" id="dl_admin" class="input_button">管理员登陆</button>
         </div>
         <div class="main_left mian_long">
-            <h3>中心动态</h3>
-            <span class="gd"><a href="/Home/Dynamic" target="_blank">更多>></a></span>
+            <h3>通知公告</h3>
+            <span class="gd"><a href="/Home/Notice" target="_blank">更多>></a></span>
             <ul>
-                @foreach (wlhx.Models.Dynamic news in ViewBag.showNews)
+                @foreach (wlhx.Models.Dynamic news in ViewBag.showNotice)
                 {
-                    <li><a href="/Home/See/@news.dynamic_id/@news.dynamic_class/li3" target="_blank">@news.dynamic_title</a><span>@news.dynamic_publicTime</span></li>
+                    <li><a href="/Home/See/@news.dynamic_id/@news.dynamic_class/li10" target="_blank">@news.dynamic_title</a><span>@news.dynamic_publicTime</span></li>
                 }
             </ul>
         </div>
         <div class="main_left main_right">
+            <h3>专业建设</h3>
+            <span class="gd"><a href="/Home/CreativeExercise/1" target="_blank">更多>></a></span>
+            <ul>
+                @foreach (wlhx.Models.Dynamic news in ViewBag.showCG)
+                {
+                    <li><a href="/Home/See/@news.dynamic_id/@news.dynamic_class/li10" target="_blank">@news.dynamic_title</a></li>
+                }
+            </ul>
+        </div>
+        <div class="main_left">
             <h3>中心概况</h3>
             <div id="video"><div id="a1"></div></div>
-            <p style="text-indent:2em"><a href="/Home/General" target="_blank">连工业大学无机材料实验室，原为硅酸盐工程实验室，始建于1958年，是我校建校初始就创建的实验室之一...</a></p>
+            <!-- <p style="text-indent:2em"><a href="/Home/General" target="_blank">连工业大学无机材料实验室，原为硅酸盐工程实验室，始建于1958年，是我校建校初始就创建的实验室之一...</a></p> -->
             <script src="~/ckplayer/ckplayer.js"></script>
             <script type="text/javascript">
                 var flashvars = {
@@ -424,7 +418,7 @@
                     t: '2',//视频开始前播放swf/图片时的时间
                     e: '2',//视频结束后的动作，0是调用js函数，1是循环播放，2是暂停播放，3是调用视频推荐列表的插件
                     v: '80',//默认音量，0-100之间
-                    p: '1',//视频默认0是暂停，1是播放
+                    p: '0',//视频默认0是暂停，1是播放
                     h: '1',//播放http视频流时采用何种拖动方法，0是按关键帧，1是按关键时间点
                     q: '',//视频流拖动时参考函数，默认是start
                     m: '0',//默认是否采用点击播放按钮后再加载视频，0不是，1是,设置成1时不要有前置广告
@@ -443,496 +437,70 @@
                 //调用播放器结束
             </script>
         </div>
-        <div class="main_left">
-            <h3>中心架构</h3>
-           
-        </div>
         <div class="main_left mian_long">
-            <h3>通知公告</h3>
-            <span class="gd"><a href="/Home/Notice" target="_blank">更多>></a></span>
+            <h3>中心动态</h3>
+            <span class="gd"><a href="/Home/Dynamic" target="_blank">更多>></a></span>
             <ul>
-                @foreach (wlhx.Models.Dynamic news in ViewBag.showNotice)
+                @foreach (wlhx.Models.Dynamic news in ViewBag.showNews)
                 {
-                    <li><a href="/Home/See/@news.dynamic_id/@news.dynamic_class/li10" target="_blank">@news.dynamic_title</a><span>@news.dynamic_publicTime</span></li>
+                    <li><a href="/Home/See/@news.dynamic_id/@news.dynamic_class/li3" target="_blank">@news.dynamic_title</a><span>@news.dynamic_publicTime</span></li>
                 }
             </ul>
         </div>
-        <div class="main_left main_right">
-            <h3>成果展示</h3>
-            <span class="gd"><a href="/Home/CreativeExercise/1" target="_blank">更多>></a></span>
+        <div class="main_left  main_right" style="height:310px;">
+            <h3>中心架构</h3>
             <ul>
-                @foreach (wlhx.Models.Dynamic news in ViewBag.showCG)
-                {
-                    <li><a href="/Home/See/@news.dynamic_id/@news.dynamic_class/li10" target="_blank">@news.dynamic_title</a></li>
-                }
+                <li><h5>中心管理</h5></li>
+                <li><a>&nbsp;&nbsp;·主任：王志强</a></li>
+                <li><a>&nbsp;&nbsp;·副主任：刘贵山</a></li>
+                <li><a>&nbsp;&nbsp;·副主任：姜妍彦</a></li>
+                <li><h5>中心实验室</h5></li>
+                <li><a>&nbsp;&nbsp;·无机材料科学基础实验室</a></li>
+                <li><a>&nbsp;&nbsp;·玻璃工艺实验室</a></li>
+                <li><a>&nbsp;&nbsp;·热工实验室</a></li>
+                <li><a>&nbsp;&nbsp;·粉体工程实验室</a></li>
+                <li><a>&nbsp;&nbsp;·材料制备实验室</a></li>
+                <li><a>&nbsp;&nbsp;·材料性能实验室</a></li>
             </ul>
         </div>
         <div style="clear:both"></div>
-    </div><!-- end main -->
-    <div class="main_btm">
-        <!-- start main_btm -->
-        <div class="container">
-            <div class="main row">
-                <div class="col-md-6 content_left">
-                    <table>
-                        <tr>
-                            @foreach (wlhx.Models.StudentImg sImg in ViewBag.img)
-                            {
-                                <td><img src="@sImg.studentImg_url" alt="" class="img-responsive"></td>
-                            }
-                            @foreach (wlhx.Models.StudentImg sImg in ViewBag.img)
-                            {
-                                <td><img src="@sImg.studentImg_url" alt="" class="img-responsive"></td>
-                            }
-                        </tr>
-                    </table>
-                </div>
-                <div class="col-md-6 content_right">
-                    <h4>中心建设、发展历程</h4>
-                    <p class="para">无机材料实验室原名硅酸盐实验室，始建于1958年，是我校建校初始就创建的实验室之一。2007年本中心所属材料及改性实验室成功获得省高校重点实验室，2008年无机材料专业被评为省级示范专业，省级教学团队， 2010年获批大连市经信委平台项目太阳能光伏技术创新平台与公共测试平台，2010年4月无机材料实验教学中心获批校级实验教学示范中心。 </p>
-                    <a href="/Home/General" class="fa-btn btn-1 btn-1e">查看更多</a>
-                </div>
+        <div id="fl">
+            <div class="con_title"><img src="/images/spacer.gif" width="66" height="17" border="0"></div>
+            <div class="con_line"><img src="/images/spacer.gif" width="730" height="6" border="0"></div>
+            <div id="fl_links">
+                <a title="中国硅酸盐学会" target="_blank" href="http://www.ceramsoc.com/cn/index.html">
+                    <img width="119" height="60" border="0" src="/images/link1.png">
+                </a>
+                <a title="清华大学材料学院" target="_blank" href="http://www.mse.tsinghua.edu.cn/">
+                    <img width="119" height="60" border="0" src="/images/link2.png">
+                </a>
+                <a title="中国陶瓷工业协会" target="_blank" href="http://www.ccianet.cn/">
+                    <img width="119" height="60" border="0" src="/images/link3.png">
+                </a>
+                <a title="中国材料研究学会" target="_blank" href="http://www.c-mrs.org.cn/cn/">
+                    <img width="119" height="60" border="0" src="/images/link6.png">
+                </a>
+                <a title="上海硅酸盐研究所" target="_blank" href="http://www.sic.ac.cn/
+">
+                    <img width="119" height="60" border="0" src="/images/link4.png">
+                </a>
+                <a title="上海硅酸盐工业协会网" target="_blank" href="http://www.scachina.org/">
+                    <img width="119" height="60" border="0" src="/images/link5.png">
+                </a>
+                <a title="中国科学技术协会" target="_blank" href="http://www.cast.org.cn/">
+                    <img width="119" height="60" border="0" src="/images/link7.png">
+                </a>
+                <a title="博慧讲坛" target="_blank" href="http://dlpu.fy.chaoxing.com/portal/">
+                    <img width="119" height="60" border="0" src="/images/link8.png">
+                </a>
+                <a title="泛雅网络学习平台" target="_blank" href="http://dlpu.fy.chaoxing.com/portal/">
+                    <img width="119" height="60" border="0" src="/images/link9.png">
+                </a>
             </div>
-            <!----start-img-cursual---->
-            <div id="owl-demo" class="owl-carousel text-center">
-                <div class="item">
-                    <div class="cau_left">
-                        <img class="lazyOwl" src="~/images/Teachers/t1.png" alt="Lazy Owl Image" />
-                    </div>
-
-                    <div class="cau_left">
-                        <h4><a href="/Home/See/18/6/li5" target="_blank">郝洪顺</a></h4>
-                        <p>
-                            1979年11月生于山东聊城，中共党员，硕士生导师
-                        </p>
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="cau_left">
-                        <img class="lazyOwl" src="~/images/Teachers/t2.png" alt="Lazy Owl Image" />
-                    </div>
-                    <div class="cau_left">
-                        <h4><a href="/Home/See/19/6/li5" target="_blank">胡志强</a></h4>
-                        <p>
-                            教授，辽宁省名师，中共党员，硕士生导师，学校学术带头人。
-                        </p>
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="cau_left">
-                        <img class="lazyOwl" src="~/images/Teachers/t3.png" alt="Lazy Owl Image" />
-                    </div>
-                    <div class="cau_left">
-                        <h4><a href="/Home/See/20/6/li5" target="_blank">姜淑文</a></h4>
-                        <p>
-                            留学归国人员，博士学位。2000年毕业于大连理工大学材料系金属学专业
-                        </p>
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="cau_left">
-                        <img class="lazyOwl" src="~/images/Teachers/t4.png" alt="Lazy Owl Image" />
-                    </div>
-                    <div class="cau_left">
-                        <h4><a href="/Home/See/23/6/li5" target="_blank">姜妍彦</a></h4>
-                        <p>
-                            教授，博士学位，辽宁省自然科学基金委员会项目评审专家
-                        </p>
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="cau_left">
-                        <img class="lazyOwl" src="~/images/Teachers/t5.png" alt="Lazy Owl Image" />
-                    </div>
-                    <div class="cau_left">
-                        <h4><a href="/Home/See/22/6/li5" target="_blank">刘敬肖</a></h4>
-                        <p>
-                            工学博士，教授，硕士生导师，辽宁省百千万人才千人层次，辽宁省优秀青年骨干教师。国家自然科学基金项目评审专家，国家863计划专家库专家
-                        </p>
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="cau_left">
-                        <img class="lazyOwl" src="~/images/Teachers/c5.png" alt="Lazy Owl Image" />
-
-                    </div>
-                    <div class="cau_left">
-                        <h4><a href="/Home/See/21/6/li5" target="_blank">刘贵山</a></h4>
-                        <p>
-                            材料工程系主任，副教授，硕士生导师。无机非金属材料省级实验示范中心副主任，辽宁省示范专业、省级教学团队成员
-                        </p>
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="cau_left">
-                        <img class="lazyOwl" src="~/images/Teachers/t6.png" alt="Lazy Owl Image" />
-                    </div>
-                    <div class="cau_left">
-                        <h4><a href="/Home/See/17/6/li5" target="_blank">王志强</a></h4>
-                        <p>
-                            教授，辽宁省教育厅材料类教学指导委员会委员。
-                        </p>
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="cau_left">
-                        <img class="lazyOwl" src="~/images/Teachers/t7.png" alt="Lazy Owl Image" />
-                    </div>
-                    <div class="cau_left">
-                        <h4><a href="/Home/See/24/6/li5" target="_blank">张晶晶</a></h4>
-                        <p>
-                            讲师、生于1982年，2013年博士毕业于河海大学材料学专业。
-                        </p>
-                    </div>
-                </div>
-
-                <!----//End-img-cursual---->
-                <div class="item">
-                    <div class="cau_left">
-                        <img class="lazyOwl" src="~/images/Teachers/t1.png" alt="Lazy Owl Image" />
-                    </div>
-
-                    <div class="cau_left">
-                        <h4><a href="/Home/See/18/6/li5" target="_blank">郝洪顺</a></h4>
-                        <p>
-                            1979年11月生于山东聊城，中共党员，硕士生导师
-                        </p>
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="cau_left">
-                        <img class="lazyOwl" src="~/images/Teachers/t2.png" alt="Lazy Owl Image" />
-                    </div>
-                    <div class="cau_left">
-                        <h4><a href="/Home/See/19/6/li5" target="_blank">胡志强</a></h4>
-                        <p>
-                            教授，辽宁省名师，中共党员，硕士生导师，学校学术带头人。
-                        </p>
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="cau_left">
-                        <img class="lazyOwl" src="~/images/Teachers/t3.png" alt="Lazy Owl Image" />
-                    </div>
-                    <div class="cau_left">
-                        <h4><a href="/Home/See/20/6/li5" target="_blank">姜淑文</a></h4>
-                        <p>
-                            留学归国人员，博士学位。2000年毕业于大连理工大学材料系金属学专业
-                        </p>
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="cau_left">
-                        <img class="lazyOwl" src="~/images/Teachers/t4.png" alt="Lazy Owl Image" />
-                    </div>
-                    <div class="cau_left">
-                        <h4><a href="/Home/See/23/6/li5" target="_blank">姜妍彦</a></h4>
-                        <p>
-                            教授，博士学位，辽宁省自然科学基金委员会项目评审专家
-                        </p>
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="cau_left">
-                        <img class="lazyOwl" src="~/images/Teachers/t5.png" alt="Lazy Owl Image" />
-                    </div>
-                    <div class="cau_left">
-                        <h4><a href="/Home/See/22/6/li5" target="_blank">刘敬肖</a></h4>
-                        <p>
-                            工学博士，教授，硕士生导师，辽宁省百千万人才千人层次，辽宁省优秀青年骨干教师。国家自然科学基金项目评审专家，国家863计划专家库专家
-                        </p>
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="cau_left">
-                        <img class="lazyOwl" src="~/images/Teachers/c5.png" alt="Lazy Owl Image" />
-
-                    </div>
-                    <div class="cau_left">
-                        <h4><a href="/Home/See/21/6/li5" target="_blank">刘贵山</a></h4>
-                        <p>
-                            材料工程系主任，副教授，硕士生导师。无机非金属材料省级实验示范中心副主任，辽宁省示范专业、省级教学团队成员
-                        </p>
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="cau_left">
-                        <img class="lazyOwl" src="~/images/Teachers/t6.png" alt="Lazy Owl Image" />
-                    </div>
-                    <div class="cau_left">
-                        <h4><a href="/Home/See/17/6/li5" target="_blank">王志强</a></h4>
-                        <p>
-                            教授，辽宁省教育厅材料类教学指导委员会委员。
-                        </p>
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="cau_left">
-                        <img class="lazyOwl" src="~/images/Teachers/t7.png" alt="Lazy Owl Image" />
-                    </div>
-                    <div class="cau_left">
-                        <h4><a href="/Home/See/24/6/li5" target="_blank">张晶晶</a></h4>
-                        <p>
-                            讲师、生于1982年，2013年博士毕业于河海大学材料学专业。
-                        </p>
-                    </div>
-                </div>
-
-            </div>
+            <div class="clear"><img src="/images/spacer.gif" width="1" height="1" border="0"></div>
         </div>
-        @Html.Partial("~/Views/Home/foot.cshtml")
-
-        <script src="~/js/iconsIndex.js"></script>
+    </div>
+    @Html.Partial("~/Views/Home/foot.cshtml")
+    </div>
 </body>
 </html>
-<style type="text/css">
-    body, div, ul, li, h4, p {
-        margin: 0;
-        padding: 0;
-    }
-
-
-
-    #box_wwwzzjsnet {
-        position: relative;
-        width: 754px;
-        height: 292px;
-        margin: 115px auto 0;
-    }
-
-        #box_wwwzzjsnet ul {
-            position: relative;
-            width: 754px;
-            height: 292px;
-        }
-
-        #box_wwwzzjsnet li {
-            position: absolute;
-            border: 2px solid #000;
-            list-style: none;
-            background: #000;
-            width: 0;
-            height: 0;
-            top: 146px;
-            left: 377px;
-            z-index: 0;
-            cursor: pointer;
-            overflow: hidden;
-            border-radius: 3px;
-        }
-
-            #box_wwwzzjsnet li img {
-                width: 100%;
-                height: 100%;
-                vertical-align: top;
-            }
-
-            #box_wwwzzjsnet li div {
-                position: absolute;
-                bottom: -100px;
-                width: 100%;
-                height: 100px;
-                background: #000;
-                filter: alpha(opacity=70);
-                opacity: 0.7;
-            }
-
-                #box_wwwzzjsnet li div h4 {
-                    margin: 0 10px;
-                    font: 12px/24px arial;
-                    border-bottom: 1px #333 solid;
-                }
-
-                    #box_wwwzzjsnet li div h4 span {
-                        color: red;
-                        margin-left: 10px;
-                    }
-
-                #box_wwwzzjsnet li div p {
-                    margin: 5px 10px 0;
-                    text-indent: 2em;
-                }
-
-        #box_wwwzzjsnet .prev, #box_wwwzzjsnet .next {
-            position: absolute;
-            top: 50%;
-            width: 39px;
-            height: 80px;
-            margin-top: -40px;
-            overflow: hidden;
-            text-indent: -999px;
-            cursor: pointer;
-            background: url(/images/arraer.png) no-repeat;
-        }
-
-        #box_wwwzzjsnet .prev {
-            left: -60px;
-        }
-
-        #box_wwwzzjsnet .next {
-            right: -60px;
-            background-position: -39px 0;
-        }
-</style>
-<script type="text/javascript">
-    function Zoompic()
-    {
-        this.initialize.apply(this, arguments);
-    }
-    Zoompic.prototype =
-    {
-        initialize: function (id)
-        {
-            var _this = this;
-            this.box = typeof id == "string" ? document.getElementById(id) : id;
-            this.oPre = this.box.getElementsByTagName('pre')[0];
-            this.oNext = this.box.getElementsByTagName('pre')[1];
-            this.oUl = this.box.getElementsByTagName('ul')[0];
-            this.aLi = this.oUl.getElementsByTagName('li');
-            this.timer = null;
-            this.iCenter = 3;
-            this.aStor = [];
-            this.options = [
-                { width: 120, height: 150, top: 71, left: 134, zIndex: 1 },
-                { width: 130, height: 170, top: 61, left: 0, zIndex: 2 },
-                { width: 170, height: 218, top: 37, left: 110, zIndex: 3 },
-                { width: 224, height: 288, top: 0, left: 262, zIndex: 4 },
-                { width: 170, height: 218, top: 37, left: 468, zIndex: 3 },
-                { width: 130, height: 170, top: 61, left: 620, zIndex: 2 },
-                { width: 120, height: 150, top: 71, left: 496, zIndex: 1 }
-            ];
-            for (var i = 0; i < this.aLi.length; i++) this.aStor[i] = this.aLi[i];
-            this.up();
-            this._oNext = function ()
-            {
-                return _this.doNext.apply(_this);
-            }
-            this._oPre = function ()
-            {
-                return _this.doPre.apply(_this);
-            }
-            this.addBing(this.oNext, "click", this._oNext);
-            this.addBing(this.oPre, "click", this._oPre);
-            setInterval(this._oNext, 5000);
-        },
-        doNext: function ()
-        {
-            this.aStor.unshift(this.aStor.pop());
-            this.up();
-        },
-        doPre: function ()
-        {
-            this.aStor.push(this.aStor.shift());
-            this.up();
-        },
-        up: function ()
-        {
-            _this = this;
-            for (var i = 0; i < this.aStor.length; i++) this.oUl.appendChild(this.aStor[i]);
-            for (var i = 0; i < this.aStor.length; i++)
-            {
-                this.aStor[i].index = i;
-                if (i < 7)
-                {
-                    this.css(this.aStor[i], "display", "block");
-                    this.starMove(this.aStor[i], this.options[i], function ()
-                    {
-                        _this.starMove(_this.aStor[_this.iCenter].getElementsByTagName('img')[0], { opacity: 100 }, function ()
-                        {
-                            _this.aStor[_this.iCenter].onmouseover = function ()
-                            {
-                                _this.starMove(this.getElementsByTagName('div')[0], { bottom: 0 });
-                            }
-                            _this.aStor[_this.iCenter].onmouseout = function ()
-                            {
-                                _this.starMove(this.getElementsByTagName('div')[0], { bottom: -100 });
-                            }
-                        });
-                    })
-                }
-                if (i < this.iCenter || i > this.iCenter)
-                {
-                    this.css(this.aStor[i].getElementsByTagName('img')[0], "opacity", 30);
-                    this.aStor[i].onmouseover = function ()
-                    {
-                        _this.starMove(this.getElementsByTagName('img')[0], { opacity: 100 });
-                    }
-                    this.aStor[i].onmouseout = function ()
-                    {
-                        _this.starMove(this.getElementsByTagName('img')[0], { opacity: 30 });
-                    }
-                    this.aStor[i].onmouseout();
-                } else
-                {
-                    this.aStor[i].onmouseover = this.aStor[i].onmouseout = null;
-                }
-            }
-        },
-        starMove: function (obj, json, fnEnd)
-        {
-            _this = this;
-            clearInterval(obj.timer);
-            obj.timer = setInterval(function ()
-            {
-                var oStop = true;
-                for (var attr in json)
-                {
-                    if (attr == "opacity")
-                    {
-                        icurr = Math.round(parseFloat(_this.css(obj, attr)) * 100);
-                    } else
-                    {
-                        icurr = parseInt(_this.css(obj, attr));
-                    }
-                    var ispeed = (json[attr] - icurr) / 8;
-                    ispeed = ispeed > 0 ? Math.ceil(ispeed) : Math.floor(ispeed);
-                    if (icurr != json[attr])
-                    {
-                        oStop = false;
-                        _this.css(obj, attr, icurr + ispeed);
-                    }
-                }
-                if (oStop)
-                {
-                    clearInterval(obj.timer);
-                    fnEnd && fnEnd.apply(_this, arguments);
-                }
-            }, 30);
-        },
-        css: function (obj, attr, value)
-        {
-            if (arguments.length === 2)
-            {
-                return obj.currentStyle ? obj.currentStyle[attr] : getComputedStyle(obj, false)[attr];
-            } else if (arguments.length === 3)
-            {
-                switch (attr)
-                {
-                    case "width":
-                    case "height":
-                    case "left":
-                    case "right":
-                    case "top":
-                    case "bottom":
-                        obj.style[attr] = value + 'px';
-                        break;
-                    case "opacity":
-                        obj.style.filter = "alpha(opacity=" + value + ")";
-                        obj.style.opacity = value / 100;
-                        break;
-                    default:
-                        obj.style[attr] = value;
-                        break;
-                }
-            }
-        },
-        addBing: function (obj, type, fnEnd)
-        {
-            return obj.addEventListener ? obj.addEventListener(type, fnEnd, false) : obj.attachEvent("on" + type, fnEnd);
-        }
-    }
-    window.onload = function ()
-    {
-        new Zoompic("box_wwwzzjsnet");
-    }
-</script>

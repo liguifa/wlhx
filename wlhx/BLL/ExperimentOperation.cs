@@ -2,6 +2,7 @@
 using Common;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -22,7 +23,7 @@ namespace wlhx.BLL
             json.Append("{\"total\":\"" + experiments.Count + "\",\"rows\":[");
             foreach (Experiment experiment in experiments)
             {
-                json.Append("{\"id\":\"" + experiment.experiment_id + "\",\"title\":\"" + experiment.experiment_title + "\",\"grade\":\"" + experiment.experiment_allowGrades + "\",\"chooseNum\":\"" + experiment.Chooses.Count(d => d.choose_ownExperimentId == experiment.experiment_id) + "\",\"totalNum\":\"" + experiment.experiment_peopleNum + "\",\"oper\":\"" + GetStudentOperatioon(experiment.experiment_peopleNum, s, experiment.Chooses.Count(d => d.choose_isDel == false), experiment.experiment_id, experiment.experiment_allowGrades.Split(','), true) + "\"},");
+                json.Append("{\"id\":\"" + experiment.experiment_id + "\",\"title\":\"" + experiment.experiment_title + "\",\"grade\":\"" + experiment.experiment_allowGrades + "\",\"chooseNum\":\"" + experiment.Chooses.Count(d => d.choose_ownExperimentId == experiment.experiment_id) + "\",\"totalNum\":\"" + experiment.experiment_peopleNum + "\",\"oper\":\"" + GetStudentOperatioon(experiment.experiment_peopleNum, s, experiment.Chooses.Count(d => d.choose_isDel == false), experiment.experiment_id, experiment.experiment_allowGrades.Split(','), true) + "\",\"stuName\":\"" + (experiment.Chooses.Where(d => d.choose_isDel == false).Count() >= 1 ? experiment.Chooses.Where(d => d.choose_isDel == false).First().Student.student_name : "") + "\",\"type\":\"" + experiment.experiment_type + "\",\"src\":\"" + experiment.experiment_src + "\",\"teacher\":\"" + experiment.experiment_teacher + "\"},");
             }
             string res = json.ToString();
             res = res.Length >= 2 ? res.Substring(0, res.Length - 1) + "]}" : res;
@@ -104,7 +105,7 @@ namespace wlhx.BLL
             {
                 long id = e.experiment_id;
                 long count = new ChooseOperation().SearchCount(u => u.choose_ownExperimentId == id && u.choose_isDel == false);
-                s = "{\"id\":\"" + e.experiment_id + "\",\"name\":\"" + e.experiment_title + "\",\"week\":\""+e.experiment_week+"\",\"allGrade\":\"" + e.experiment_allowGrades + "\",\"number\":\"" + count + "\",\"max\":\"" + e.experiment_peopleNum + "\"},";
+                s = "{\"id\":\"" + e.experiment_id + "\",\"name\":\"" + e.experiment_title + "\",\"week\":\"" + e.experiment_week + "\",\"allGrade\":\"" + e.experiment_allowGrades + "\",\"number\":\"" + count + "\",\"max\":\"" + e.experiment_peopleNum + "\"},";
                 sb.Append(s);
             }
             if (experiments.Count != 0)
@@ -122,7 +123,7 @@ namespace wlhx.BLL
             Modify(e, "experiment_isDel");
             return "ok";
         }
-        public string AddExperiment(string name, string allowGrade, int type, int maxNum,string week)
+        public string AddExperiment(string name, string allowGrade, int type, int maxNum, string week)
         {
             Experiment e = new Experiment();
             e.experiment_isDel = false;
@@ -142,7 +143,7 @@ namespace wlhx.BLL
             }
             return "ok";
         }
-        public string EditExperiment(string id, string name, string allowGrade, string max,string week)
+        public string EditExperiment(string id, string name, string allowGrade, string max, string week)
         {
             int maxNum = Convert.ToInt32(max);
             long exid = Convert.ToInt32(id);
@@ -200,24 +201,53 @@ namespace wlhx.BLL
         public JsonStatus OutStudentFromProject(long id, string path)
         {
             StringBuilder json = new StringBuilder();
-            List<Experiment> experiments = base.Search(d => d.experiment_isDel == false && d.experiment_id == id);
+            List<Experiment> experiments = id == 0 ? base.Search(d => d.experiment_isDel == false) : base.Search(d => d.experiment_isDel == false && d.experiment_id == id);
             if (experiments.Count >= 1)
             {
-                List<Choos> chooses = experiments[0].Chooses.Where(d => d.choose_isDel == false).ToList();
-                List<Student> students = new List<Student>();
-                if (chooses.Count >= 1)
-                {
-                    foreach (Choos c in chooses)
-                    {
-                        students.Add(c.Student);
-                    }
-                }
-                return DataProcessing.OutExecl(path, new StudentOperation().ListToDataTable(students), new string[] { "学号", "姓名", "年级", "专业", "班级", "专业方向" }, experiments[0].experiment_title + "学生名单");
+                //List<Choos> chooses = experiments[0].Chooses.Where(d => d.choose_isDel == false).ToList();
+                //List<Student> students = new List<Student>();
+                //if (chooses.Count >= 1)
+                //{
+                //    foreach (Choos c in chooses)
+                //    {
+                //        students.Add(c.Student);
+                //    }
+                //}
+                return DataProcessing.OutExecl(path, this.ListToDataTable(experiments), new string[] { "学号", "姓名", "毕业设计（论文）题目", "类型", "来源", "指导教师" }, "毕业课题学生名单");
             }
             return new JsonStatus() { status = "0", msg = "导出失败！数据异常！" };
         }
 
-        public JsonStatus AddProjectFromSenior(string id, string title, string grade, string totalNum)
+        public DataTable ListToDataTable(List<Experiment> experiments)
+        {
+            DataTable dt = new DataTable();
+            DataColumn dc1 = new DataColumn("student_number", typeof(string));
+            DataColumn dc2 = new DataColumn("student_name", typeof(string));
+            DataColumn dc3 = new DataColumn("experiment_title", typeof(string));
+            DataColumn dc4 = new DataColumn("experiment_type", typeof(string));
+            DataColumn dc5 = new DataColumn("experiment_src", typeof(string));
+            DataColumn dc6 = new DataColumn("experiment_teacher", typeof(string));
+            dt.Columns.Add(dc1);
+            dt.Columns.Add(dc2);
+            dt.Columns.Add(dc3);
+            dt.Columns.Add(dc4);
+            dt.Columns.Add(dc5);
+            dt.Columns.Add(dc6);
+            foreach (Experiment exp in experiments)
+            {
+                DataRow dr = dt.NewRow();
+                dr[0] = exp.Chooses.Where(d => d.choose_isDel == false).Count() >= 1 ? exp.Chooses.Where(d => d.choose_isDel == false).First().Student.student_number.ToString() : "";
+                dr[1] = exp.Chooses.Where(d => d.choose_isDel == false).Count() >= 1 ? exp.Chooses.Where(d => d.choose_isDel == false).First().Student.student_name : "";
+                dr[2] = exp.experiment_title;
+                dr[3] = exp.experiment_type;
+                dr[4] = exp.experiment_src;
+                dr[5] = exp.experiment_teacher;
+                dt.Rows.Add(dr);
+            }
+            return dt;
+        }
+
+        public JsonStatus AddProjectFromSenior(string id, string title, string grade, string totalNum, string type, string src, string teacher)
         {
             JsonStatus js = new JsonStatus();
             if (title.Length <= 25)
@@ -245,6 +275,9 @@ namespace wlhx.BLL
                             experiment_allowGrades = grade,
                             experiment_peopleNum = tot,
                             experiment_title = title,
+                            experiment_type = type,
+                            experiment_src = src,
+                            experiment_teacher = teacher
                         };
                         base.Add(e);
                         js.status = "1";
@@ -270,7 +303,7 @@ namespace wlhx.BLL
             return js;
         }
 
-        public JsonStatus EditProjectFromSenior(string id, string title, string grade, string totalNum)
+        public JsonStatus EditProjectFromSenior(string id, string title, string grade, string totalNum, string type, string src, string teacher)
         {
             JsonStatus js = new JsonStatus();
             try
@@ -298,8 +331,11 @@ namespace wlhx.BLL
                                 Experiment e = base.Search(d => d.experiment_isDel == false && d.experiment_id == eId)[0];
                                 e.experiment_peopleNum = tot;
                                 e.experiment_title = title;
-                                e.experiment_allowGrades=grade;
-                                base.Modify(e, new string[] { "experiment_peopleNum", "experiment_title", "experiment_allowGrades" });
+                                e.experiment_allowGrades = grade;
+                                e.experiment_src = src;
+                                e.experiment_type = type;
+                                e.experiment_teacher = teacher;
+                                base.Modify(e, new string[] { "experiment_peopleNum", "experiment_title", "experiment_allowGrades", "experiment_type", "experiment_src", "experiment_teacher" });
                                 js.status = "1";
                                 js.msg = "编辑成功！";
                             }

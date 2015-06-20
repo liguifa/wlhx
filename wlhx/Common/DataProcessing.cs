@@ -18,7 +18,7 @@ namespace wlhx.Common
             return js;
         }
 
-        public static JsonStatus OutExecl(string path, DataTable dt, string[] titles,string fileName)
+        public static JsonStatus OutExecl(string path, DataTable dt, string[] titles, string fileName)
         {
             JsonStatus js = new JsonStatus();
             try
@@ -41,8 +41,8 @@ namespace wlhx.Common
                         sheet.Cells[i + 2, j + 2] = dt.Rows[i][j];
                     }
                 }
-                string fn=DateTime.Now.ToString("yyyyMMddhhmmss")+"@" + fileName;
-                string filename = path+"/" + fn+".xlsx";
+                string fn = DateTime.Now.ToString("yyyyMMddhhmmss") + "@" + fileName;
+                string filename = path + "/" + fn + ".xlsx";
                 if (File.Exists(filename))
                 {
                     File.Delete(filename);
@@ -55,10 +55,10 @@ namespace wlhx.Common
                 js.status = "1";
                 js.msg = fn;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 js.status = "0";
-                js.msg = "导出失败！未知错误！"+e.Message;
+                js.msg = "导出失败！未知错误！" + e.Message;
             }
             return js;
         }
