@@ -36,7 +36,7 @@
             professional: 0
         },
         columns: [[
-            { field: 'id', hidden: true, },
+            { field: 'id', hidden: true },
             { field: 'student_num', title: '学号', width: 10, editor: "validatebox" },
             { field: 'name', title: '姓名', width: 15, editor: "validatebox" },
             { field: 'grade', title: '年级', width: 15, editor: "validatebox" },
@@ -56,8 +56,7 @@
                     row: {}
                 });
                 
-                $("#dg").datagrid("beginEdit",1);
-                alert("OK");
+                $("#dg").datagrid("beginEdit",0);
                 index = 0;
                 isAdd = true;
             }
@@ -196,7 +195,7 @@
                             $("#reset").linkbutton("enable");
                             $("#input").linkbutton("enable");
                             $("#undo").linkbutton("enable");
-                            $("#select").linkbutton("disable");
+                            $("#select_2").linkbutton("disable");
                             isAdd = false;
                             isEdit = false;
                         }
@@ -212,7 +211,7 @@
                     $("#reset").linkbutton("enable");
                     $("#input").linkbutton("enable");
                     $("#undo").linkbutton("enable");
-                    $("#select").linkbutton("disable");
+                    $("#select_2").linkbutton("disable");
                 }
             }
         }, '-', {
@@ -230,7 +229,7 @@
                 $("#reset").linkbutton("disable");
                 $("#input").linkbutton("enable");
                 $("#undo").linkbutton("enable");
-                $("#select").linkbutton("enable");
+                $("#select_2").linkbutton("enable");
             }
         }, '-', {
             id: "search_2",
@@ -306,7 +305,7 @@
             $("#reset").linkbutton("disable");
             $("#input").linkbutton("disable");
             $("#undo").linkbutton("disable");
-            $("#select").linkbutton("disable");
+            $("#select_2").linkbutton("disable");
         },
         onDblClickRow: function (rowIndex, rowData)
         {
@@ -352,7 +351,7 @@
                                 $("#reset").linkbutton("enable");
                                 $("#input").linkbutton("enable");
                                 $("#undo").linkbutton("disable");
-                                $("#select").linkbutton("enable");
+                                $("#select_2").linkbutton("enable");
                             }
                             else
                             {

@@ -15,6 +15,9 @@
     <File Include="bin/LitJSON.dll">
       <publishTime>06/19/2015 14:37:52</publishTime>
     </File>
+    <File Include="bin/Microsoft.CSharp.dll">
+      <publishTime>09/26/2012 03:16:08</publishTime>
+    </File>
     <File Include="bin/Microsoft.Web.Infrastructure.dll">
       <publishTime>06/19/2015 14:37:31</publishTime>
     </File>
@@ -24,17 +27,50 @@
     <File Include="bin/Newtonsoft.Json.dll">
       <publishTime>06/19/2015 14:37:32</publishTime>
     </File>
+    <File Include="bin/System.ComponentModel.DataAnnotations.dll">
+      <publishTime>09/26/2012 03:16:08</publishTime>
+    </File>
+    <File Include="bin/System.Configuration.dll">
+      <publishTime>09/26/2012 03:16:08</publishTime>
+    </File>
+    <File Include="bin/System.Data.DataSetExtensions.dll">
+      <publishTime>09/26/2012 03:16:08</publishTime>
+    </File>
+    <File Include="bin/System.Data.dll">
+      <publishTime>09/26/2012 03:16:08</publishTime>
+    </File>
+    <File Include="bin/System.Data.Entity.dll">
+      <publishTime>09/26/2012 03:16:08</publishTime>
+    </File>
+    <File Include="bin/System.dll">
+      <publishTime>09/26/2012 03:16:08</publishTime>
+    </File>
+    <File Include="bin/System.Drawing.dll">
+      <publishTime>09/26/2012 03:16:08</publishTime>
+    </File>
+    <File Include="bin/System.EnterpriseServices.dll">
+      <publishTime>09/26/2012 03:16:08</publishTime>
+    </File>
+    <File Include="bin/System.Net.Http.dll">
+      <publishTime>09/26/2012 03:16:08</publishTime>
+    </File>
     <File Include="bin/System.Net.Http.Formatting.dll">
-      <publishTime>08/10/2014 11:17:57</publishTime>
+      <publishTime>06/19/2015 14:37:30</publishTime>
+    </File>
+    <File Include="bin/System.Net.Http.WebRequest.dll">
+      <publishTime>09/26/2012 03:16:08</publishTime>
+    </File>
+    <File Include="bin/System.Web.Entity.dll">
+      <publishTime>09/26/2012 03:16:08</publishTime>
     </File>
     <File Include="bin/System.Web.Helpers.dll">
       <publishTime>06/19/2015 14:37:30</publishTime>
     </File>
     <File Include="bin/System.Web.Http.dll">
-      <publishTime>08/10/2014 11:17:58</publishTime>
+      <publishTime>06/19/2015 14:37:30</publishTime>
     </File>
     <File Include="bin/System.Web.Http.WebHost.dll">
-      <publishTime>08/10/2014 11:17:59</publishTime>
+      <publishTime>06/19/2015 14:37:30</publishTime>
     </File>
     <File Include="bin/System.Web.Mvc.dll">
       <publishTime>06/19/2015 14:37:29</publishTime>
@@ -52,22 +88,22 @@
       <publishTime>06/19/2015 14:37:30</publishTime>
     </File>
     <File Include="bin/wlhx.dll">
-      <publishTime>06/20/2015 21:50:00</publishTime>
+      <publishTime>06/21/2015 12:49:56</publishTime>
     </File>
     <File Include="bin/zh-Hans/EntityFramework.resources.dll">
       <publishTime>06/19/2015 14:37:28</publishTime>
     </File>
     <File Include="bin/zh-Hans/System.Net.Http.Formatting.resources.dll">
-      <publishTime>08/10/2014 11:18:01</publishTime>
+      <publishTime>06/19/2015 14:37:30</publishTime>
     </File>
     <File Include="bin/zh-Hans/System.Web.Helpers.resources.dll">
       <publishTime>06/19/2015 14:37:30</publishTime>
     </File>
     <File Include="bin/zh-Hans/System.Web.Http.resources.dll">
-      <publishTime>08/10/2014 11:18:01</publishTime>
+      <publishTime>06/19/2015 14:37:30</publishTime>
     </File>
     <File Include="bin/zh-Hans/System.Web.Http.WebHost.resources.dll">
-      <publishTime>08/10/2014 11:18:01</publishTime>
+      <publishTime>06/19/2015 14:37:30</publishTime>
     </File>
     <File Include="bin/zh-Hans/System.Web.Mvc.resources.dll">
       <publishTime>06/19/2015 14:37:29</publishTime>
@@ -4972,7 +5008,7 @@
       <publishTime>10/01/2014 14:43:10</publishTime>
     </File>
     <File Include="Views/Student/SeniorProject.cshtml">
-      <publishTime>08/18/2014 16:25:16</publishTime>
+      <publishTime>06/21/2015 12:49:49</publishTime>
     </File>
     <File Include="Views/Student/StudentMsg.cshtml">
       <publishTime>08/18/2014 16:05:04</publishTime>
@@ -5029,13 +5065,13 @@
       <publishTime>08/21/2014 17:04:34</publishTime>
     </File>
     <File Include="Views/User/SeniorProjectManagement.cshtml">
-      <publishTime>06/20/2015 20:27:21</publishTime>
+      <publishTime>06/21/2015 12:29:38</publishTime>
     </File>
     <File Include="Views/User/StudentDetailedMsg.cshtml">
       <publishTime>08/19/2014 20:27:40</publishTime>
     </File>
     <File Include="Views/User/StudentManagement.cshtml">
-      <publishTime>06/20/2015 21:15:23</publishTime>
+      <publishTime>06/21/2015 12:40:09</publishTime>
     </File>
     <File Include="Views/Web.config">
       <publishTime>08/10/2014 11:17:40</publishTime>

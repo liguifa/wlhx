@@ -8,6 +8,7 @@ using wlhx.Common;
 
 namespace wlhx.Controllers
 {
+    [OutputCache(Duration=60)]
     public class HomeController : Controller
     {
         //
